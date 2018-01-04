@@ -9,6 +9,8 @@ body {
     width: 100vw;
     min-height: 100vh;
     overflow-x: hidden;
+    margin: 0;
+    padding: 0;
 }
 
 #bg {
@@ -27,8 +29,40 @@ body {
     right: 0;
     height: 128px;
     padding: 32px;
+    z-index: 1001;
 }
-#header #logo, #header #logo img {
+#header > .left {
+    float: left;
+}
+#header > .right {
+    float: right;
+}
+#header .icon, #header .icon img {
+    display: inline-block;
+    position: relative;
     width: 64px;
     height: 64px;
+}
+#header .icon img:not(:first-child) {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+
+#main-wrapper {
+    display: block;
+    position: relative;
+    margin: 128px auto 128px auto;
+    max-width: calc(768px + 64px);
+}
+#main {
+    display: block;
+    position: relative;
+    min-height: calc(100vh - 256px + 64px);
+    padding: 32px;
+}
+
+h1 {
+    font-weight: lighter;
 }

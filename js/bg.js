@@ -1,6 +1,7 @@
 (()=>{
 
 var canvas = document.getElementById('bg');
+var main = document.getElementById('main');
 
 var gl = null;
 
@@ -14,8 +15,8 @@ if (!gl)
 
 var mouse = [0.5, 0.5];
 document.addEventListener('mousemove', e => {
-    mouse[0] = e.pageX / canvas.clientHeight;
-    mouse[1] = 1.0 - e.pageY / canvas.clientHeight;
+    mouse[0] = e.clientX / canvas.clientWidth - 0.5;
+    mouse[1] = 1.0 - e.clientY / canvas.clientHeight - 0.5;
 }, false);
 
 var motion = [0, 0];
@@ -72,12 +73,15 @@ function buildContext() {
         
         uniform mat4 uModelViewMatrix;
         uniform mat4 uProjectionMatrix;
+        
+        uniform vec4 uBody;
         uniform float uEdgeScale;
         uniform float uEdgeWidth;
         uniform float uEdgeCount;
         uniform float uTime;
         uniform vec2 uMouse;
         
+        varying vec4 vBody;
         varying float vEdgeScale;
         varying float vEdgeWidth;
         varying float vEdgeCount;
@@ -86,12 +90,14 @@ function buildContext() {
         varying vec2 vMouse;
         
         void main() {
+            vBody = uBody;
             vEdgeScale = uEdgeScale;
             vEdgeWidth = uEdgeWidth;
             vEdgeCount = uEdgeCount;
             vTime = uTime;
             vUV = aVertexPosition.xy;
             vMouse = uMouse;
+            
             gl_Position = uProjectionMatrix * uModelViewMatrix * aVertexPosition;
         }
         `);
@@ -104,12 +110,17 @@ function buildContext() {
         
         #define round(x) (floor(x))
         
+        varying vec4 vBody;
         varying float vEdgeScale;
         varying float vEdgeWidth;
         varying float vEdgeCount;
         varying float vTime;
         varying vec2 vUV;
         varying vec2 vMouse;
+
+        float random(vec2 p) {
+            return fract(cos(dot(p, vec2(23.14069263277926, 2.665144142690225))) * 123456.0);
+        }
         
         float get(vec3 v) {
             float a = 0.5 + 0.5 * cos(sin(v.x * 3.8) + sin(v.y * 3.8));
@@ -126,13 +137,17 @@ function buildContext() {
         
         void main() {
             vec2 uv = vUV;
-            float t = vTime * 0.03;
+            float t = vTime;
         
-            // vec2 m = 0.5 + 0.5 * sin(0.5 * PI * (vMouse.xy - 0.5));
-            vec2 m = 0.5 + 0.5 * (vMouse.xy - 0.5);
+            // vec2 m = 0.5 + 0.5 * sin(0.5 * PI * (vMouse - 0.5));
+            vec2 m = vMouse;
+
+            float grow = 1.0 - sin(PI * 0.5 * min(1.0, max(0.0, 8.0 * distance(uv, m))));
+
             uv += 0.2 * m;
         
             uv += 256.0;
+
             uv.y += t;
         
             uv *= vEdgeWidth * 16.0;
@@ -144,8 +159,17 @@ function buildContext() {
             cc = max(0.1, min(0.9, cc));
         
             float edgef = vEdgeScale * vEdgeWidth * 0.01;
+            edgef *= 1.0 + grow * 5.0 * (cc * 2.0);
+
+            float body =
+                smoothstep(-edgef, 0.0, vUV.x - vBody.x) *
+                (1.0 - smoothstep(0.0, edgef, vUV.y - vBody.y)) *
+                (1.0 - smoothstep(0.0, edgef, vUV.x - vBody.z)) *
+                smoothstep(-edgef, 0.0, vUV.y - vBody.w)
+            ;
+
             float edgec = vEdgeCount * 8.0;
-        
+
             // float cl = crush(edgec, get(vec3(uv.x - edgef, uv.y, t)));
             // float cr = crush(edgec, get(vec3(uv.x + edgef, uv.y, t)));
             // float cu = crush(edgec, get(vec3(uv.x, uv.y - edgef, t)));
@@ -156,16 +180,24 @@ function buildContext() {
             float cld = crush(edgec, get(vec3(uv.x - edgef, uv.y + edgef, t)));
             float crd = crush(edgec, get(vec3(uv.x + edgef, uv.y + edgef, t)));
         
-            float d = smoothstep(0.0, 1.0,
+            float d = smoothstep(0.0, 1.0 + body,
                 // abs(cl - cr) +
                 // abs(cu - cd) +
                 abs(clu - crd) +
                 abs(cld - cru) +
-                0.0
+                0.0 // step(0.001, fract(body))
             );
+
+            body = step(0.0001, body);
         
             float c = (0.05 + cc * 0.95) * d;
             c = 0.05 * cc + c;
+
+            c = (1.0 - body) * c + body * (
+                0.1 + 0.2 * min(1.0, cc + c)
+            );
+
+            c += random(vUV * 3.0) * 0.01;
         
             gl_FragColor = vec4(c, c, c, 1.0);
         }
@@ -187,6 +219,7 @@ function buildContext() {
         uniformLocations: {
             projectionMatrix: gl.getUniformLocation(shaderProgram, 'uProjectionMatrix'),
             modelViewMatrix: gl.getUniformLocation(shaderProgram, 'uModelViewMatrix'),
+            body: gl.getUniformLocation(shaderProgram, 'uBody'),
             edgeScale: gl.getUniformLocation(shaderProgram, 'uEdgeScale'),
             edgeWidth: gl.getUniformLocation(shaderProgram, 'uEdgeWidth'),
             edgeCount: gl.getUniformLocation(shaderProgram, 'uEdgeCount'),
@@ -200,9 +233,9 @@ function buildContext() {
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
 
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-        1.0,  1.0,
+         1.0,  1.0,
         -1.0,  1.0,
-        1.0, -1.0,
+         1.0, -1.0,
         -1.0, -1.0,
     ]), gl.STATIC_DRAW);
 
@@ -220,6 +253,8 @@ canvas.addEventListener('webglcontextlost', e => {
 canvas.addEventListener('webglcontextrestored', e => {
     console.log("revive");
     gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+    canvas.width = 0;
+    canvas.height = 0;
     buildContext();
 }, false);
 buildContext();
@@ -260,19 +295,28 @@ function render(now) {
         gl.backingStorePixelRatio ||
         1
     ) / perfscale;
+
     var width  = canvas.clientWidth;
     var height = canvas.clientHeight;
+
+    var vwidth;
+    var vheight;
+    if (aspect < 1.0) {
+        vwidth = aspect;
+        vheight = 1.0;
+    } else {
+        vwidth = 1.0;
+        vheight = 1.0 / aspect;
+    }
+
     if (canvas.width != width * density || canvas.height != height * density) {
         canvas.width = width * density;
         canvas.height = height * density;
         gl.viewport(0, 0, canvas.width, canvas.height);
 
         var projectionMatrix = mat4.create();
-        if (aspect < 1.0)
-            mat4.ortho(projectionMatrix /* = */, -aspect * 0.5, aspect * 0.5, -0.5, 0.5, 0.1, 100.0);
-        else
-            mat4.ortho(projectionMatrix /* = */, -0.5, 0.5, 1.0 / -aspect * 0.5, 1.0 / aspect * 0.5, 0.1, 100.0);
-    
+        mat4.ortho(projectionMatrix /* = */, vwidth * -0.5, vwidth * 0.5, vheight * -0.5, vheight * 0.5, 0.1, 100.0);
+        
         var modelViewMatrix = mat4.create();
         mat4.translate(modelViewMatrix /* = */, modelViewMatrix, [0.0, 0.0, -1.0]);
 
@@ -286,6 +330,7 @@ function render(now) {
             false,
             modelViewMatrix
         );
+
         gl.uniform1f(
             programInfo.uniformLocations.edgeScale,
             Math.max(1.0, perfscale)
@@ -299,14 +344,26 @@ function render(now) {
             Math.min(width, height) / 700
         );
     }
+
+    
+    var bodyBounds = main.getBoundingClientRect();
+    gl.uniform4fv(
+        programInfo.uniformLocations.body,
+        [
+            vwidth * (bodyBounds.x / canvas.clientWidth - 0.5),
+            vheight * ((1.0 - bodyBounds.y / canvas.clientHeight) - 0.5),
+            vwidth * ((bodyBounds.x + bodyBounds.width) / canvas.clientWidth - 0.5),
+            vheight * ((1.0 - (bodyBounds.y + bodyBounds.height) / canvas.clientHeight) - 0.5),
+        ]
+    );
     
     gl.uniform1f(
         programInfo.uniformLocations.time,
-        (nowoffs / 100 % 1024) + now / 1000
+        (nowoffs / 100 % 1024) + 0.03 * now / 1000
     );
     gl.uniform2fv(
         programInfo.uniformLocations.mouse,
-        mouse
+        [vwidth * mouse[0], vheight * mouse[1]]
     );
     
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
