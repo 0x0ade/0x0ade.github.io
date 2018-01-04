@@ -149,7 +149,8 @@ precision highp float;
 #define TAU 6.28318
 
 #define round(x) (floor(x+0.5))
-#define crush(x,c) (floor(x*c+0.5))
+// #define crush(c, x) (floor(x * c + 0.5))
+#define crush(c, x) (fract(x * c))
 
 uniform sampler2D uSamplerNoise;
 
@@ -164,9 +165,9 @@ varying vec2 vMouse;
 
 float get(vec3 v) {
     float a = cos(sin(v.x * 3.8) + sin(v.y * 3.8));
-    float b = sin(v.x * 0.17 + v.z * 4.0) * sin(v.y * 0.17);
+    float b = sin(v.x * 0.47 + v.z * 4.0) * sin(v.y * 0.47);
     float c = sin(v.x - sin(v.y) + v.z);
-    float d = sin(v.x + a) * sin(v.y + b) * cos(b + c + 0.1 * v.z);
+    float d = sin(2.0 * v.x + a) * sin(2.0 * v.y + b) * cos(b + c + 0.1 * v.z);
     
     return 1.0 + 0.2 * a + 0.5 * a * c + 0.4 * c + 0.5 * b * d;
 }
@@ -191,9 +192,6 @@ void main() {
     float cc = get(vec3(uv, t));
     cc = 0.1 + min(0.8, cc);
 
-    float edgef = vEdgeScale * vEdgeWidth * 0.01;
-    edgef *= 1.0 + grow * 5.0 * (cc * 2.0);
-
     float growbf = 0.02 * grow;
     float softbody =
         smoothstep(-growbf, 0.0, vUV.x - vBody.x) *
@@ -203,7 +201,11 @@ void main() {
     1.0;
     float body = smoothstep(0.0001, 0.04, softbody);
 
-    float edgec = vEdgeCount * 8.0 + 0.5 * vUV.x * fract(1.0 - fract(softbody)) * body;
+    float edgec = vEdgeCount * 8.0;
+
+    /*
+    float edgef = vEdgeScale * vEdgeWidth * 0.01;
+    edgef *= 1.0 + 7.0 * grow;
 
     // float cl = crush(edgec, get(vec3(uv.x - edgef, uv.y, t)));
     // float cr = crush(edgec, get(vec3(uv.x + edgef, uv.y, t)));
@@ -221,6 +223,13 @@ void main() {
         abs(clu - crd) +
         abs(cld - cru)
     );
+    */
+
+    float cf = get(vec3(0.1 * edgec * uv, t));
+    float d = smoothstep(0.95, 1.0,
+        0.5 * grow + abs(sin(PI * edgec * cf))
+    );
+    d = smoothstep(0.8, 0.9, pow(d, 3.0));
 
     float c = (0.05 + cc * 0.95 + grow) * d;
     c = 0.05 * cc + c;
@@ -291,7 +300,7 @@ buildContext();
 
 var nowoffs = Date.now();
 var dropped = 1;
-var perfscale = 1;
+var perfscale = 4;
 var frameskip = 0;
 var frameskipped = 0;
 var then;
@@ -312,7 +321,7 @@ function render(now) {
         perfscale += 0.75;
         dropped = 0;
     } else if (dropped < -5) {
-        perfscale = Math.max(1.0, perfscale * 0.9);
+        perfscale = Math.max(1, perfscale * 0.9);
         dropped = 0;
     }
     then = now;
@@ -375,7 +384,7 @@ function render(now) {
             ]
         );
 
-        generateNoise(canvas.width, canvas.height);
+        generateNoise(canvas.clientWidth, canvas.clientHeight);
     }
 
     
