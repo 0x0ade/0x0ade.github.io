@@ -50,8 +50,9 @@ var master = context.createGain();
 master.connect(masterConvolverGain);
 master.connect(masterConvolverBypass);
 
-fetching++;
-fetch('assets/samplemap.json').then(response => response.json())
+function load() {
+    fetching++;
+    fetch('assets/samplemap.json').then(response => response.json())
     .then(map => {
         samplemap = map;
         map.samples.forEach(full => {
@@ -61,8 +62,8 @@ fetch('assets/samplemap.json').then(response => response.json())
         fetching--;
     });
 
-fetching++;
-fetch('assets/irmap.json').then(response => response.json())
+    fetching++;
+    fetch('assets/irmap.json').then(response => response.json())
     .then(map => {
         irmap = map;
         map.forEach(full => {
@@ -71,5 +72,10 @@ fetch('assets/irmap.json').then(response => response.json())
         });
         fetching--;
     });
+}
+
+funciton init
+
+load();
 
 })();

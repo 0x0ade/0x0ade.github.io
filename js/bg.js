@@ -58,42 +58,51 @@ ${gl.getShaderInfoLog(shader)}
     return shader;
 }
 
-var shaderProgram;
-var programInfo;
-var positionBuffer;
-var noiseWidth;
-var noiseHeight;
+var shaderBG;
+var infoBG;
+
+var shaderBlit;
+var infoBlit;
+
+var rectBuffer;
+
+var noiseTextureWidth;
+var noiseTextureHeight;
 var noiseTexture;
+
+var scaleFBOWidth;
+var scaleFBOHeight;
+var scaleFBOTexture;
+var scaleFBO;
 
 var renderId;
 
+function pot(x) {
+    x--;
+    x |= x >> 1;
+    x |= x >> 2;
+    x |= x >> 4;
+    x |= x >> 8;
+    x |= x >> 16;
+    x++;
+    return x;
+}
+
 function generateNoise(width, height) {
-    width--;
-    width |= width >> 1;
-    width |= width >> 2;
-    width |= width >> 4;
-    width |= width >> 8;
-    width |= width >> 16;
-    width++;
+    width = pot(width);
+    height = pot(height);
 
-    height--;
-    height |= height >> 1;
-    height |= height >> 2;
-    height |= height >> 4;
-    height |= height >> 8;
-    height |= height >> 16;
-    height++;
-
-    if (noiseTexture && width <= noiseWidth && height <= noiseHeight)
+    if (noiseTexture && width <= noiseTextureWidth && height <= noiseTextureHeight)
         return;
+    noiseTextureWidth = width;
+    noiseTextureHeight = height;
 
-    if (!noiseTexture)
-        noiseTexture = gl.createTexture();
+    if (noiseTexture)
+        gl.deleteTexture(noiseTexture);
+    noiseTexture = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, noiseTexture);
-    noiseWidth = width;
-    noiseHeight = height;
 
-    data = [];
+    var data = [];
     for (var i = 0; i < 4 * width * height; i++) {
         data[i] = Math.floor(256 * Math.random());
     }
@@ -104,21 +113,55 @@ function generateNoise(width, height) {
     );
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.REPEAT);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.REPEAT);
     gl.bindTexture(gl.TEXTURE_2D, null);
+}
+
+function generateScaleFBO(width, height) {
+    width = pot(width);
+    height = pot(height);
+
+    if (scaleFBO && width <= scaleFBOWidth && height <= scaleFBOHeight)
+        return;
+    scaleFBOWidth = width;
+    scaleFBOHeight = height;
+
+    if (scaleFBOTexture)
+        gl.deleteTexture(scaleFBOTexture);
+    scaleFBOTexture = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, scaleFBOTexture);
+
+    gl.texImage2D(
+        gl.TEXTURE_2D, 0, gl.RGBA, width, height, 0, gl.RGBA, gl.UNSIGNED_BYTE,
+        null
+    );
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    gl.bindTexture(gl.TEXTURE_2D, null);
+
+    if (scaleFBO)
+        gl.deleteFramebuffer(scaleFBO);
+    scaleFBO = gl.createFramebuffer();
+    gl.bindFramebuffer(gl.FRAMEBUFFER, scaleFBO);
+    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, scaleFBOTexture, 0);
+
 }
 
 function buildContext() {
     canvas.width = 0;
     canvas.height = 0;
 
-    var vertexShader = loadShader(gl, gl.VERTEX_SHADER,
+    shaderBG = gl.createProgram();
+    gl.attachShader(shaderBG, loadShader(gl, gl.VERTEX_SHADER,
 `#version 100
 precision highp float;
 
 attribute vec4 aVertexPosition;
 
-uniform mat4 uModelViewMatrix;
-uniform mat4 uProjectionMatrix;
+uniform vec2 uView;
 
 uniform vec4 uBody;
 uniform vec3 uEdge;
@@ -135,13 +178,14 @@ void main() {
     vBody = uBody;
     vEdge = uEdge;
     vTime = uTime;
-    vUV = aVertexPosition.xy;
+    vUV = aVertexPosition.xy * uView;
     vMouse = uMouse;
-    
-    gl_Position = uProjectionMatrix * uModelViewMatrix * aVertexPosition;
+
+    gl_Position = aVertexPosition;
 }
-`);
-    var fragmentShader = loadShader(gl, gl.FRAGMENT_SHADER,
+`
+    ));
+    gl.attachShader(shaderBG, loadShader(gl, gl.FRAGMENT_SHADER,
 `#version 100
 precision highp float;
 
@@ -231,46 +275,85 @@ void main() {
     );
     d = smoothstep(0.8, 0.9, pow(d, 3.0));
 
-    float c = (0.05 + cc * 0.95 + grow) * d;
-    c = 0.05 * cc + c;
+    float c = 0.05 + cc * d;
 
     c = (1.0 - body) * c + body * (
-        0.1 + 0.2 * min(1.0, 0.3 * cc + c)
+        0.1 + 0.2 * cc + d * 0.1
     );
 
     c += 0.01 * texture2D(uSamplerNoise, vUV).a;
 
     gl_FragColor = vec4(c, c, c, 1.0);
 }
-`);
-        
-    shaderProgram = gl.createProgram();
-    gl.attachShader(shaderProgram, vertexShader);
-    gl.attachShader(shaderProgram, fragmentShader);
-    gl.linkProgram(shaderProgram);
+`
+    ));
+    gl.linkProgram(shaderBG);
     
-    if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS))
-        throw new Error('Shader program link failed.');
+    if (!gl.getProgramParameter(shaderBG, gl.LINK_STATUS))
+        throw new Error('Background shader program link failed.');
     
-    programInfo = {
-        program: shaderProgram,
+    infoBG = {
         attribLocations: {
-            vertexPosition: gl.getAttribLocation(shaderProgram, 'aVertexPosition'),
+            vertexPosition: gl.getAttribLocation(shaderBG, 'aVertexPosition'),
         },
         uniformLocations: {
-            projectionMatrix: gl.getUniformLocation(shaderProgram, 'uProjectionMatrix'),
-            modelViewMatrix: gl.getUniformLocation(shaderProgram, 'uModelViewMatrix'),
-            samplerNoise: gl.getUniformLocation(shaderProgram, 'uSamplerNoise'),
-            body: gl.getUniformLocation(shaderProgram, 'uBody'),
-            edge: gl.getUniformLocation(shaderProgram, 'uEdge'),
-            time: gl.getUniformLocation(shaderProgram, 'uTime'),
-            mouse: gl.getUniformLocation(shaderProgram, 'uMouse'),
+            view: gl.getUniformLocation(shaderBG, 'uView'),
+            samplerNoise: gl.getUniformLocation(shaderBG, 'uSamplerNoise'),
+            body: gl.getUniformLocation(shaderBG, 'uBody'),
+            edge: gl.getUniformLocation(shaderBG, 'uEdge'),
+            time: gl.getUniformLocation(shaderBG, 'uTime'),
+            mouse: gl.getUniformLocation(shaderBG, 'uMouse'),
         },
     };
 
-    positionBuffer = gl.createBuffer();
+    shaderBlit = gl.createProgram();
+    gl.attachShader(shaderBlit, loadShader(gl, gl.VERTEX_SHADER,
+`#version 100
+precision mediump float;
 
-    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+attribute vec4 aVertexPosition;
+
+uniform vec2 uView;
+
+varying vec2 vUV;
+
+void main() {
+    vUV = (aVertexPosition.xy * 0.5 + 0.5) * uView;
+    gl_Position = aVertexPosition;
+}
+`
+    ));
+    gl.attachShader(shaderBlit, loadShader(gl, gl.FRAGMENT_SHADER,
+`#version 100
+precision mediump float;
+
+uniform sampler2D uSampler;
+
+varying vec2 vUV;
+
+void main() {
+    gl_FragColor = texture2D(uSampler, vUV);
+}
+`
+    ));
+    gl.linkProgram(shaderBlit);
+    
+    if (!gl.getProgramParameter(shaderBlit, gl.LINK_STATUS))
+        throw new Error('Background blitting shader program link failed.');
+    
+    infoBlit = {
+        attribLocations: {
+            vertexPosition: gl.getAttribLocation(shaderBlit, 'aVertexPosition'),
+        },
+        uniformLocations: {
+            sampler: gl.getUniformLocation(shaderBlit, 'uSampler'),
+            view: gl.getUniformLocation(shaderBlit, 'uView'),
+        },
+    };
+
+    rectBuffer = gl.createBuffer();
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, rectBuffer);
 
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
          1.0,  1.0,
@@ -279,9 +362,9 @@ void main() {
         -1.0, -1.0,
     ]), gl.STATIC_DRAW);
 
-    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-    gl.vertexAttribPointer(programInfo.attribLocations.vertexPosition, 2, gl.FLOAT, false, 0, 0);
-    gl.enableVertexAttribArray(programInfo.attribLocations.vertexPosition);
+    gl.bindBuffer(gl.ARRAY_BUFFER, rectBuffer);
+    gl.vertexAttribPointer(infoBG.attribLocations.vertexPosition, 2, gl.FLOAT, false, 0, 0);
+    gl.enableVertexAttribArray(infoBG.attribLocations.vertexPosition);
 
     renderId = requestAnimationFrame(render);    
 }
@@ -299,8 +382,8 @@ canvas.addEventListener('webglcontextrestored', e => {
 buildContext();
 
 var nowoffs = Date.now();
-var dropped = 1;
-var perfscale = 4;
+var dropped = 0;
+var dynscale = 4;
 var frameskip = 0;
 var frameskipped = 0;
 var then;
@@ -310,6 +393,9 @@ function render(now) {
         renderId = requestAnimationFrame(render);
         return;
     }
+
+    var dynscaleOld = dynscale;
+
     var fsf = (1 + frameskipped);
     if (!then)
         then = now - 1000 / 60 * fsf;
@@ -318,30 +404,36 @@ function render(now) {
     else if (now - then < 1000 / 50 * fsf)
         dropped--;
     if (dropped > 5) {
-        perfscale += 0.75;
+        dynscale += 0.75;
         dropped = 0;
+        console.log("Low performance. Scale: ", dynscale);
     } else if (dropped < -5) {
-        perfscale = Math.max(1, perfscale * 0.9);
+        dynscale = Math.max(1, dynscale * 0.9);
         dropped = 0;
+        if (dynscale != dynscaleOld)
+            console.log("High performance. Scale: ", dynscale);
     }
     then = now;
     frameskipped = 0;
     
-    var aspect = canvas.clientWidth / canvas.clientHeight;
-    
-    gl.useProgram(programInfo.program);
-
-    var density = (window.devicePixelRatio || 1) / (
-        gl.webkitBackingStorePixelRatio ||
-        gl.mozBackingStorePixelRatio ||
-        gl.msBackingStorePixelRatio ||
-        gl.oBackingStorePixelRatio ||
-        gl.backingStorePixelRatio ||
+    var density = (
+        window.devicePixelRatio ||
+        window.webkitDevicePixelRatio ||
+        window.mozDevicePixelRatio ||
+        window.opDevicePixelRatio ||
         1
-    ) / perfscale;
+    );
+    var dyndensity = density / dynscale;
 
-    var width  = canvas.clientWidth;
+    var width = canvas.clientWidth;
     var height = canvas.clientHeight;
+    var aspect = width / height;
+
+    var outputWidth = width * density;    
+    var outputHeight = height * density;    
+
+    var scaleWidth = width * dyndensity;
+    var scaleHeight = height * dyndensity;
 
     var vwidth;
     var vheight;
@@ -353,64 +445,85 @@ function render(now) {
         vheight = 1.0 / aspect;
     }
 
-    if (canvas.width != width * density || canvas.height != height * density) {
-        canvas.width = width * density;
-        canvas.height = height * density;
-        gl.viewport(0, 0, canvas.width, canvas.height);
+    var resized = canvas.width != outputWidth || canvas.height != outputHeight;
+    if (resized) {
+        canvas.width = outputWidth;
+        canvas.height = outputHeight;
 
-        var projectionMatrix = mat4.create();
-        mat4.ortho(projectionMatrix /* = */, vwidth * -0.5, vwidth * 0.5, vheight * -0.5, vheight * 0.5, 0.1, 100.0);
-        
-        var modelViewMatrix = mat4.create();
-        mat4.translate(modelViewMatrix /* = */, modelViewMatrix, [0.0, 0.0, -1.0]);
+        generateNoise(outputWidth, outputHeight);
 
-        gl.uniformMatrix4fv(
-            programInfo.uniformLocations.projectionMatrix,
-            false,
-            projectionMatrix
-        );
-        gl.uniformMatrix4fv(
-            programInfo.uniformLocations.modelViewMatrix,
-            false,
-            modelViewMatrix
+        gl.useProgram(shaderBG);
+        // Update view bounds.
+        gl.uniform2fv(
+            infoBG.uniformLocations.view,
+            [0.5 * vwidth, 0.5 * vheight]
         );
 
+    }
+
+    generateScaleFBO(scaleWidth, scaleHeight);    
+
+    if (resized || dynscaleOld != dynscale) {
+        gl.useProgram(shaderBG);
+        // Update edgeScale, edgeWidth, edgeCount on resize and rescale.
         gl.uniform3fv(
-            programInfo.uniformLocations.edge,
+            infoBG.uniformLocations.edge,
             [
-                Math.max(1.0, perfscale), // Scale
-                100 / Math.min(width, height), // Width
-                Math.min(width, height) / 700 // Count
+                Math.max(1.0, dynscale), // Scale
+                100 / Math.min(outputWidth, outputHeight), // Width
+                Math.min(outputWidth, outputHeight) / 700 // Count
             ]
         );
 
-        generateNoise(canvas.clientWidth, canvas.clientHeight);
+        gl.useProgram(shaderBlit);
+        // scaleFBO is larger than scale, as scaleFBO is POT.
+        gl.uniform2fv(
+            infoBlit.uniformLocations.view,
+            [scaleWidth / scaleFBOWidth, scaleHeight / scaleFBOHeight]
+        );
     }
 
+    // Draw to scaleFBO.
+
+    gl.bindFramebuffer(gl.FRAMEBUFFER, scaleFBO);
+    gl.viewport(0, 0, width * dyndensity, height * dyndensity);
     
+    gl.useProgram(shaderBG);
     var bodyBounds = main.getBoundingClientRect();
     gl.uniform4fv(
-        programInfo.uniformLocations.body,
+        infoBG.uniformLocations.body,
         [
-            vwidth * (bodyBounds.x / canvas.clientWidth - 0.5),
-            vheight * ((1.0 - bodyBounds.y / canvas.clientHeight) - 0.5),
-            vwidth * ((bodyBounds.x + bodyBounds.width) / canvas.clientWidth - 0.5),
-            vheight * ((1.0 - (bodyBounds.y + bodyBounds.height) / canvas.clientHeight) - 0.5),
+            vwidth * (bodyBounds.x / width - 0.5),
+            vheight * ((1.0 - bodyBounds.y / height) - 0.5),
+            vwidth * ((bodyBounds.x + bodyBounds.width) / width - 0.5),
+            vheight * ((1.0 - (bodyBounds.y + bodyBounds.height) / height) - 0.5),
         ]
     );
-    
     gl.uniform1f(
-        programInfo.uniformLocations.time,
+        infoBG.uniformLocations.time,
         (nowoffs / 100 % 1024) + 0.03 * now / 1000
     );
     gl.uniform2fv(
-        programInfo.uniformLocations.mouse,
+        infoBG.uniformLocations.mouse,
         [vwidth * mouse[0], vheight * mouse[1]]
     );
 
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, noiseTexture);
-    gl.uniform1i(programInfo.uniformLocations.samplerNoise, 0);
+    gl.uniform1i(infoBG.uniformLocations.samplerNoise, 0);
+    
+    gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+
+    // Draw to screen.
+
+    gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    gl.viewport(0, 0, canvas.width, canvas.height);
+
+    gl.useProgram(shaderBlit);
+
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, scaleFBOTexture);
+    gl.uniform1i(infoBlit.uniformLocations.sampler, 0);
     
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
