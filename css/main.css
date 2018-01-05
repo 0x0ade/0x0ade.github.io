@@ -1,13 +1,11 @@
-@import url('https://fonts.googleapis.com/css?family=Fira+Sans:300,400,500');
-
-@import url('tipper.css');
-
+html {
+    min-height: 100vh;
+}
 body {
     font-family: 'Fira Sans', sans-serif;
     background: rgba(0, 0, 0, 1);
     color: rgba(255, 255, 255, 0.87);
     width: 100vw;
-    min-height: 100vh;
     overflow-x: hidden;
     margin: 0;
     padding: 0;
@@ -15,7 +13,7 @@ body {
 
 #bg {
     position: fixed;
-    z-index: -1001;
+    z-index: -1002;
     top: 0;
     left: 0;
     width: 100vw;
@@ -31,19 +29,38 @@ body {
     padding: 32px;
     z-index: 1001;
 }
-#header > .left {
+#footer {
+    position: absolute;
+    bottom: -128px;
+    left: 0;
+    right: 0;
+    height: 32px;
+    padding: 32px;
+    z-index: -1001;
+}
+
+.left {
     float: left;
 }
-#header > .right {
+.right {
     float: right;
 }
-#header .icon, #header .icon img {
+
+#version {
+    background: white;
+    color: black;
+    padding: 8px;
+    height: 32px;
+    box-sizing: border-box;
+}
+
+.icon, .icon img {
     display: inline-block;
     position: relative;
     width: 64px;
     height: 64px;
 }
-#header .icon img:not(:first-child) {
+.icon img:not(:first-child) {
     position: absolute;
     top: 0;
     left: 0;
@@ -61,6 +78,20 @@ body {
     position: relative;
     min-height: calc(100vh - 256px + 64px);
     padding: 32px;
+    animation: mainin 0.3s;
+}
+  
+@keyframes mainin {
+    0% {
+        opacity: 0;
+        transform: translateY(64px) scale(0.99);
+        filter: saturate(0);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        filter: saturate(1);
+    }
 }
 
 h1 {

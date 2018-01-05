@@ -234,7 +234,7 @@ void main() {
     t += 0.1 * m.x + 0.1 * m.y;
 
     float cc = get(vec3(uv, t));
-    cc = 0.1 + min(0.8, cc);
+    cc = 0.1 + min(0.8, cc * 0.5);
 
     float growbf = 0.02 * grow;
     float softbody =
@@ -278,7 +278,7 @@ void main() {
     float c = 0.05 + cc * d;
 
     c = (1.0 - body) * c + body * (
-        0.1 + 0.2 * cc + d * 0.1
+        0.1 + 0.05 * sin(PI * cc) + d * 0.5 * max(0.01, vUV.y - vBody.y + 0.2)
     );
 
     c += 0.01 * texture2D(uSamplerNoise, vUV).a;
@@ -415,7 +415,7 @@ function render(now) {
     }
     then = now;
     frameskipped = 0;
-    
+
     var density = (
         window.devicePixelRatio ||
         window.webkitDevicePixelRatio ||
