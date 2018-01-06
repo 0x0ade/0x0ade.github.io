@@ -1,3 +1,5 @@
+// TODO: Move this into Main.BG
+
 (()=>{
 
 var canvas = document.getElementById('bg');
@@ -165,19 +167,19 @@ uniform vec2 uView;
 
 uniform vec4 uBody;
 uniform vec3 uEdge;
-uniform float uTime;
+uniform vec2 uTimeFade;
 uniform vec2 uMouse;
 
 varying vec4 vBody;
 varying vec3 vEdge;
-varying float vTime;
+varying vec2 vTimeFade;
 varying vec2 vUV;
 varying vec2 vMouse;
 
 void main() {
     vBody = uBody;
     vEdge = uEdge;
-    vTime = uTime;
+    vTimeFade = uTimeFade;
     vUV = aVertexPosition.xy * uView;
     vMouse = uMouse;
 
@@ -203,7 +205,9 @@ varying vec3 vEdge;
 #define vEdgeScale (vEdge.x)
 #define vEdgeWidth (vEdge.y)
 #define vEdgeCount (vEdge.z)
-varying float vTime;
+varying vec2 vTimeFade;
+#define vTime (vTimeFade.x)
+#define vFade (vTimeFade.y)
 varying vec2 vUV;
 varying vec2 vMouse;
 
@@ -275,13 +279,16 @@ void main() {
     );
     d = smoothstep(0.8, 0.9, pow(d, 3.0));
 
-    float c = 0.05 + cc * d;
+    cc *= vFade;
+    d *= vFade;
+
+    float c = cc * d;
 
     c = (1.0 - body) * c + body * (
         0.1 + 0.05 * sin(PI * cc) + d * 0.5 * max(0.01, vUV.y - vBody.y + 0.2)
     );
 
-    c += 0.01 * texture2D(uSamplerNoise, vUV).a;
+    c += vFade * 0.01 * texture2D(uSamplerNoise, vUV).a;
 
     gl_FragColor = vec4(c, c, c, 1.0);
 }
@@ -301,7 +308,7 @@ void main() {
             samplerNoise: gl.getUniformLocation(shaderBG, 'uSamplerNoise'),
             body: gl.getUniformLocation(shaderBG, 'uBody'),
             edge: gl.getUniformLocation(shaderBG, 'uEdge'),
-            time: gl.getUniformLocation(shaderBG, 'uTime'),
+            timeFade: gl.getUniformLocation(shaderBG, 'uTimeFade'),
             mouse: gl.getUniformLocation(shaderBG, 'uMouse'),
         },
     };
@@ -387,7 +394,14 @@ var dynscale = 4;
 var frameskip = 0;
 var frameskipped = 0;
 var then;
-function render(now) {
+var start;
+var _set_data_bg = false;
+function render(_now) {
+    var now = window.performance.now();
+    if (!start)
+        start = now;
+    now -= start;
+    
     if (frameskipped < frameskip) {
         frameskipped++;
         renderId = requestAnimationFrame(render);
@@ -399,7 +413,7 @@ function render(now) {
     var fsf = (1 + frameskipped);
     if (!then)
         then = now - 1000 / 60 * fsf;
-    if (now - then > 1000 / 30 * fsf)
+    if (now - then > 1000 / 20 * fsf)
         dropped++;
     else if (now - then < 1000 / 50 * fsf)
         dropped--;
@@ -499,9 +513,12 @@ function render(now) {
             vheight * ((1.0 - (bodyBounds.y + bodyBounds.height) / height) - 0.5),
         ]
     );
-    gl.uniform1f(
-        infoBG.uniformLocations.time,
-        (nowoffs / 100 % 1024) + 0.03 * now / 1000
+    gl.uniform2fv(
+        infoBG.uniformLocations.timeFade,
+        [
+            (nowoffs / 100 % 1024) + 0.03 * now / 1000,
+            Math.max(0, Math.min(1, (now / 1000 - 0.5) / 0.2))
+        ]
     );
     gl.uniform2fv(
         infoBG.uniformLocations.mouse,
@@ -526,6 +543,11 @@ function render(now) {
     gl.uniform1i(infoBlit.uniformLocations.sampler, 0);
     
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+
+    if (!_set_data_bg) {
+        document.body.setAttribute('data-bg', 'on');
+        _set_data_bg = true;
+    }
 
     renderId = requestAnimationFrame(render);
 }

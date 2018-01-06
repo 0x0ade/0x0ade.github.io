@@ -1,34 +1,74 @@
-Audio = {
+Main.Audio = {
     context: AWPF.context,
     generator: null,
 
     initialized: false,
 
-    init() {
-        if (Audio.initialized)
+    muted: false,
+    mutedPreBlur: false,
+
+    mute(auto) {
+        if (Main.Audio.muted)
             return;
-        Audio.initialized = true;
+        if (!auto)
+            document.body.setAttribute('data-bgm', 'off');
+        Main.Audio.muted = true;        
+        Main.Audio.masterGain.gain.setTargetAtTime(0, Main.Audio.context.currentTime, 0.2);
+    },
+
+    unmute(auto, value) {
+        if (Main.Audio.mutedPreBlur || !Main.Audio.muted)
+            return;
+        if (!auto)
+            document.body.setAttribute('data-bgm', 'on');
+        Main.Audio.muted = false;        
+        Main.Audio.masterGain.gain.setTargetAtTime(1, Main.Audio.context.currentTime, 0.2);
+    },
+
+    init() {
+        if (Main.Audio.initialized)
+            return;
+        Main.Audio.initialized = true;
+
+        window.addEventListener('focus', e => {
+            Main.Audio.unmute(true);
+            Main.Audio.mutedPreBlur = false;
+        }, false);
+        window.addEventListener('blur', e => {
+            Main.Audio.mutedPreBlur = Main.Audio.muted;
+            Main.Audio.mute(true);
+        }, false);
+
+        Main.Audio.toggleElem = document.getElementById('audio-toggle');
+        Main.Audio.toggleElem.addEventListener('click', e => {
+            if (Main.Audio.muted)
+                Main.Audio.unmute();
+            else
+                Main.Audio.mute();            
+        }, false);
+        Main.Audio.toggleElem.addEventListener('mousedown', e => e.preventDefault(), false);
 
         console.log('init audio');
         console.log('AWPF.isAudioWorkletPolyfilled: ', AWPF.isAudioWorkletPolyfilled ? "true" : "false");
 
-        Audio.masterCompressor = Audio.context.createDynamicsCompressor();
-        Audio.masterCompressor.connect(Audio.context.destination);
+        Main.Audio.masterCompressor = Main.Audio.context.createDynamicsCompressor();
+        Main.Audio.masterCompressor.connect(Main.Audio.context.destination);
 
-        Audio.masterGain = Audio.context.createGain();
-        Audio.masterGain.connect(Audio.masterCompressor);
+        Main.Audio.masterGain = Main.Audio.context.createGain();
+        Main.Audio.masterGain.connect(Main.Audio.masterCompressor);
 
-        Audio.master = Audio.masterGain;
+        Main.Audio.master = Main.Audio.masterGain;
 
         console.log('fetching BGMGenerator');
-        Audio.context.audioWorklet.addModule('/js/bgm-worklet.js').then(() => {
+        Main.Audio.context.audioWorklet.addModule('/js/bgm-worklet.js').then(() => {
+            document.body.setAttribute('data-bgm', 'on');
             console.log('connecting BGMGenerator');
-            Audio.generator = new AudioWorkletNode(Audio.context, 'BGMGenerator');
-            Audio.generator.connect(Audio.master);
+            Main.Audio.generator = new AudioWorkletNode(Main.Audio.context, 'BGMGenerator');
+            Main.Audio.generator.connect(Main.Audio.master);
         });
 
     },
 
 };
 
-Audio.init();
+Main.Audio.init();

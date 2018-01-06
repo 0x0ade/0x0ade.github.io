@@ -1,57 +1,57 @@
-*[tip] {
+*[data-tip] {
     position: relative;
     z-index: 0;
 }
-*[tip]::after {
-    content: attr(tip);
+*[data-tip]::after {
+    content: attr(data-tip);
     position: absolute;
     z-index: 1;
     pointer-events: none;
     margin: 0;
     padding: 8px;
     background: white;
-    color: rgba(15, 15, 15, 1);
+    color: rgba(0, 0, 0, 0.94);
     transition: opacity 0.2s, transform 0.2s;
     will-change: opacity, transform;
     opacity: 0;
 }
-*[tip]:hover::after {
+*[data-tip]:hover::after {
     opacity: 1;    
 }
 
-*:not([tip-dir])::after,
-*[tip-dir="up"]::after {
+*:not([data-tip-dir])::after,
+*[data-tip-dir="up"]::after {
     left: 50%;
     transform: translate(-50%, calc(-100% + 8px));
 }
-*:not([tip-dir]):hover::after,
-*[tip-dir="up"]:hover::after {
+*:not([data-tip-dir]):hover::after,
+*[data-tip-dir="up"]:hover::after {
     transform: translate(-50%, calc(-100% - 8px));
 }
 
-*[tip-dir="down"]::after {
+*[data-tip-dir="down"]::after {
     left: 50%;
     bottom: 0;
     transform: translate(-50%, calc(100% - 8px));
 }
-*[tip-dir="down"]:hover::after {
+*[data-tip-dir="down"]:hover::after {
     transform: translate(-50%, calc(100% + 8px));
 }
 
-*[tip-dir="left"]::after {
+*[data-tip-dir="left"]::after {
     left: 0;
     top: -100%;
     transform: translate(calc(-100% + 8px), -50%);
 }
-*[tip-dir="left"]:hover::after {
+*[data-tip-dir="left"]:hover::after {
     transform: translate(calc(-100% - 8px), -50%);
 }
 
-*[tip-dir="right"]::after {
+*[data-tip-dir="right"]::after {
     right: 0;
     top: -100%;
     transform: translate(calc(100% - 8px), -50%);
 }
-*[tip-dir="right"]:hover::after {
+*[data-tip-dir="right"]:hover::after {
     transform: translate(calc(100% + 8px), -50%);
 }

@@ -15,7 +15,7 @@
         <!-- https://github.com/jariseon/audioworklet-polyfill -->
         <script src="/js/polyfill/audioworklet/audioworklet.js"></script>
         
-        <script src="/js/main.js" async defer></script>
+        <script src="/js/main.js"></script>
         <script src="/js/bgm.js" async defer></script>
 
         <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
@@ -29,16 +29,23 @@
         <meta name="author" content="Maik 0x0ade Macho">
     </head>
     <body>
+        <script>
+            (()=>{
+                document.body.setAttribute('data-js', 'on');
+                var canvas = document.createElement('canvas');
+                canvas.id = 'bg';
+                document.body.appendChild(canvas);
+            })();
+        </script>
 
-        <canvas id="bg"></canvas>
         <script src="/js/bg.js" async defer></script>
 
         <div id="header">
             <div class="left">
-                <span id="logo" tip="home" tip-dir="down" class="icon"><img src="/icon/header.svg"/></span>
+                <a class="icon" id="logo" data-tip="home" data-tip-dir="down" href="/"><img src="/icon/header.svg"/></a>
             </div>
             <div class="right">
-                <span id="speaker" tip="audio" tip-dir="down" class="icon"><img src="/icon/speaker.svg"/><img src="/icon/speaker-waves.svg"/></span>
+                <span class="icon button" id="audio-toggle" data-tip="audio" data-tip-dir="down"><img src="/icon/speaker.svg"/><img id="audio-toggle-waves" src="/icon/speaker-waves.svg"/></span>
             </div>
         </div>
 

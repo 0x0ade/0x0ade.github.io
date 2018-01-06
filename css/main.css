@@ -48,7 +48,7 @@ body {
 
 #version {
     background: white;
-    color: black;
+    color: rgba(0, 0, 0, 0.94);
     padding: 8px;
     height: 32px;
     box-sizing: border-box;
@@ -60,12 +60,27 @@ body {
     width: 64px;
     height: 64px;
 }
+.icon {
+    cursor: pointer;    
+}
+.icon img {
+    pointer-events: none;
+    transition: opacity 0.2s, transform 0.2s;
+}
 .icon img:not(:first-child) {
     position: absolute;
     top: 0;
     left: 0;
 }
 
+
+body:not([data-bgm]) #audio-toggle {
+    display: none;
+}
+body[data-bgm="off"] #audio-toggle-waves {
+    opacity: 0;
+    transform: translateX(4px);
+}
 
 #main-wrapper {
     display: block;
@@ -78,7 +93,10 @@ body {
     position: relative;
     min-height: calc(100vh - 256px + 64px);
     padding: 32px;
-    animation: mainin 0.3s;
+    animation: mainin 0.2s;
+}
+body:not([data-bg="on"]) #main {
+    background: rgba(19, 19, 19, 1);
 }
   
 @keyframes mainin {
