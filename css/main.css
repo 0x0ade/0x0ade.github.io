@@ -103,12 +103,10 @@ body:not([data-bg="on"]) #main {
     0% {
         opacity: 0;
         transform: translateY(64px) scale(0.99);
-        filter: saturate(0);
     }
     100% {
         opacity: 1;
         transform: translateY(0) scale(1);
-        filter: saturate(1);
     }
 }
 

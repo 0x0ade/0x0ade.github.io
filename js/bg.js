@@ -167,12 +167,12 @@ uniform vec2 uView;
 
 uniform vec4 uBody;
 uniform vec3 uEdge;
-uniform vec2 uTimeFade;
+uniform vec3 uTimeFade;
 uniform vec2 uMouse;
 
 varying vec4 vBody;
 varying vec3 vEdge;
-varying vec2 vTimeFade;
+varying vec3 vTimeFade;
 varying vec2 vUV;
 varying vec2 vMouse;
 
@@ -205,9 +205,10 @@ varying vec3 vEdge;
 #define vEdgeScale (vEdge.x)
 #define vEdgeWidth (vEdge.y)
 #define vEdgeCount (vEdge.z)
-varying vec2 vTimeFade;
+varying vec3 vTimeFade;
 #define vTime (vTimeFade.x)
-#define vFade (vTimeFade.y)
+#define vFadeBG (vTimeFade.y)
+#define vFadeBody (vTimeFade.z)
 varying vec2 vUV;
 varying vec2 vMouse;
 
@@ -242,6 +243,7 @@ void main() {
 
     float growbf = 0.02 * grow;
     float softbody =
+        vFadeBody *
         smoothstep(-growbf, 0.0, vUV.x - vBody.x) *
         (1.0 - smoothstep(0.0, growbf, vUV.y - vBody.y)) *
         (1.0 - smoothstep(0.0, growbf, vUV.x - vBody.z)) *
@@ -279,8 +281,8 @@ void main() {
     );
     d = smoothstep(0.8, 0.9, pow(d, 3.0));
 
-    cc *= vFade;
-    d *= vFade;
+    cc *= vFadeBG;
+    d *= vFadeBG;
 
     float c = cc * d;
 
@@ -288,7 +290,7 @@ void main() {
         0.1 + 0.05 * sin(PI * cc) + d * 0.5 * max(0.01, vUV.y - vBody.y + 0.2)
     );
 
-    c += vFade * 0.01 * texture2D(uSamplerNoise, vUV).a;
+    c += vFadeBG * 0.01 * texture2D(uSamplerNoise, vUV).a;
 
     gl_FragColor = vec4(c, c, c, 1.0);
 }
@@ -504,6 +506,7 @@ function render(_now) {
     
     gl.useProgram(shaderBG);
     var bodyBounds = main.getBoundingClientRect();
+    var bodyStyle = window.getComputedStyle(main);
     gl.uniform4fv(
         infoBG.uniformLocations.body,
         [
@@ -513,11 +516,12 @@ function render(_now) {
             vheight * ((1.0 - (bodyBounds.y + bodyBounds.height) / height) - 0.5),
         ]
     );
-    gl.uniform2fv(
+    gl.uniform3fv(
         infoBG.uniformLocations.timeFade,
         [
             (nowoffs / 100 % 1024) + 0.03 * now / 1000,
-            Math.max(0, Math.min(1, (now / 1000 - 0.5) / 0.2))
+            Math.max(0, Math.min(1, (now / 1000 - 0.5) / 0.2)),
+            bodyStyle.getPropertyValue('opacity')
         ]
     );
     gl.uniform2fv(
