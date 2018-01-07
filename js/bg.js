@@ -243,13 +243,15 @@ void main() {
 
     float growbf = 0.02 * grow;
     float softbody =
-        vFadeBody *
         smoothstep(-growbf, 0.0, vUV.x - vBody.x) *
         (1.0 - smoothstep(0.0, growbf, vUV.y - vBody.y)) *
         (1.0 - smoothstep(0.0, growbf, vUV.x - vBody.z)) *
         smoothstep(-growbf, 0.0, vUV.y - vBody.w) *
     1.0;
     float body = smoothstep(0.0001, 0.04, softbody);
+    
+    softbody *= vFadeBody;
+    body *= vFadeBody;
 
     float edgec = vEdgeCount * 8.0;
 

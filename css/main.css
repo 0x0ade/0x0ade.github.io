@@ -96,16 +96,22 @@ body[data-bgm="off"] #audio-toggle-waves {
     position: relative;
     min-height: calc(100vh - 256px + 64px);
     padding: 32px;
-    animation: mainin 0.2s;
+}
+#main:not([data-fade]), #main[data-fade="in"] {
+    animation: main-in 0.15s forwards ease-in;
+}
+#main[data-fade="out"] {
+    animation: main-out 0.15s forwards ease-in;
+    pointer-events: none;
 }
 body:not([data-bg="on"]) #main {
     background: rgba(19, 19, 19, 1);
 }
 
-@keyframes mainin {
+@keyframes main-in {
     0% {
         opacity: 0;
-        transform: translateY(64px) scale(0.99);
+        transform: translateX(-64px) scale(0.99);
     }
     100% {
         opacity: 1;
@@ -113,9 +119,25 @@ body:not([data-bg="on"]) #main {
     }
 }
 
+@keyframes main-out {
+    0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translateX(64px) scale(0.99);
+    }
+}
+
 h1, h2, h3, h4, h5, h6 {
     font-weight: lighter;
-    text-decoration: underline;
+}
+h1 {
+    font-size: 2em;
+}
+h1 a {
+    text-decoration: none;
 }
 
 a, a:visited {
