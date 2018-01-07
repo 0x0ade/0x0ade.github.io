@@ -42,6 +42,7 @@ Main = {
             // External path.
             window.location = path;
             // TODO: Don't fade out when f.e. opening external app.
+            
         } else {
             // "Internal" path.
 
