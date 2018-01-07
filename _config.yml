@@ -1,0 +1,37 @@
+# Usage: {{ site.varname }}
+title: "0x0ade"
+description: >-
+  shouting into the void
+url: "https://0x0ade.github.io/"
+author: "0x0ade"
+twitter:
+  username: "0x0ade"
+logo: "/preview.png"
+social:
+  name: "0x0ade"
+  links:
+    - "https://twitter.com/0x0ade"
+    - "https://github.com/0x0ade"
+    - "https://patreon.com/0x0ade"
+    - "dat://rotonde-0x0ade.hashbase.io"
+
+# Build settings
+markdown: kramdown
+# theme: minima
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor/bundle/
+  - vendor/cache/
+  - vendor/gems/
+  - vendor/ruby/
+
+include:
+  - _posts/
+keep_files:
+  - _posts/
