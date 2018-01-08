@@ -19,7 +19,7 @@ Main = {
         }
     },
 
-    goto(path, push) {
+    goto(path, manual) {
         if (path.startsWith(window.location.origin))
             path = path.substr(window.location.origin.length);
 
@@ -67,7 +67,7 @@ Main = {
                     var contentIEnd = body.indexOf('<!-- MODDOC CONTENT END -->', contentIEnd);
                     var content = body.substring(contentIStart + '<!-- MODDOC CONTENT START -->'.length, contentIEnd);
 
-                    if (push)
+                    if (manual)
                         history.pushState({
                             path: path
                         }, '', path);
@@ -76,7 +76,8 @@ Main = {
                         Main.mainElem.innerHTML = content;
                         Main.hook(Main.mainElem);
                         document.title = title;
-                        window.scrollTo(0, 0);
+                        if (manual && (!window.location.hash || window.location.hash.length < 1))
+                            window.scrollTo(0, 0);
                         Main.mainElem.setAttribute('data-fade', 'in');
                     }, Math.max(0, Math.ceil(fadeInEnd - window.performance.now())));
                 })
