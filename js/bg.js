@@ -1,6 +1,6 @@
 Main.BG = {
 
-    dark: false,
+    dark: Main.path !== '/',
 
     init() {
         var canvas = Main.BG.canvas = document.getElementById('bg');

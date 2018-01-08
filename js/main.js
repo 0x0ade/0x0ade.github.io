@@ -78,7 +78,8 @@ Main = {
                         document.title = title;
                         if (manual && (!window.location.hash || window.location.hash.length < 1))
                             window.scrollTo(0, 0);
-                        Main.BG.dark = path != '/';
+                        if (Main.BG)
+                            Main.BG.dark = path !== '/';
                         Main.mainElem.setAttribute('data-fade', 'in');
                     }, Math.max(0, Math.ceil(fadeInEnd - window.performance.now())));
                 })
