@@ -85,7 +85,7 @@ Main = {
 
         if (fade) {
             Main.mainElem.setAttribute('data-fade', 'out');
-            fadeInEnd = window.performance.now() + 150;
+            fadeInEnd = window.performance.now() + 100;
         }
 
     }

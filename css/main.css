@@ -9,8 +9,9 @@ body {
     overflow-x: hidden;
     margin: 0;
     padding: 0;
+    line-height: 1.5em;
 }
-tt, code, kbd, samp {
+tt, code, kbd, samp, *[data-tip]::after, #version, #main .meta {
     font-family: 'Fira Code', monospace;
 }
 
@@ -31,10 +32,12 @@ tt, code, kbd, samp {
     height: 128px;
     padding: 32px;
     z-index: 1001;
+    pointer-events: none;
+}
+#header .icon {
+    pointer-events: auto;
 }
 #footer {
-    position: absolute;
-    bottom: -128px;
     left: 0;
     right: 0;
     height: 32px;
@@ -60,13 +63,15 @@ tt, code, kbd, samp {
 .icon, .icon img {
     display: inline-block;
     position: relative;
+}
+.icon {
+    cursor: pointer;
     width: 64px;
     height: 64px;
 }
-.icon {
-    cursor: pointer;    
-}
 .icon img {
+    width: 100%;
+    height: 100%;
     pointer-events: none;
     transition: opacity 0.2s, transform 0.2s;
 }
@@ -94,14 +99,16 @@ body[data-bgm="off"] #audio-toggle-waves {
 #main {
     display: block;
     position: relative;
+    z-index: 0;
     min-height: calc(100vh - 256px + 64px);
     padding: 32px;
+    word-wrap: break-word;
 }
 #main:not([data-fade]), #main[data-fade="in"] {
-    animation: main-in 0.15s forwards ease-in;
+    animation: main-in 0.1s forwards ease-out;
 }
 #main[data-fade="out"] {
-    animation: main-out 0.15s forwards ease-in;
+    animation: main-out 0.1s forwards ease-in;
     pointer-events: none;
 }
 body:not([data-bg="on"]) #main {
@@ -111,22 +118,22 @@ body:not([data-bg="on"]) #main {
 @keyframes main-in {
     0% {
         opacity: 0;
-        transform: translateX(-64px) scale(0.99);
+        transform: translateX(-32px);
     }
     100% {
         opacity: 1;
-        transform: translateY(0) scale(1);
+        transform: translateX(0);
     }
 }
 
 @keyframes main-out {
     0% {
         opacity: 1;
-        transform: translateY(0) scale(1);
+        transform: translateX(0);
     }
     100% {
         opacity: 0;
-        transform: translateX(64px) scale(0.99);
+        transform: translateX(32px);
     }
 }
 
@@ -135,6 +142,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 h1 {
     font-size: 2em;
+    line-height: 1.5em;
 }
 h1 a {
     text-decoration: none;
@@ -150,4 +158,52 @@ a:hover, a:focus, a:active {
     color: rgba(255, 255, 255, 0.94);
     text-decoration-color: rgba(255, 255, 255, 0.94);
     text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+}
+
+#main article.post-preview {
+    margin-bottom: 64px;
+}
+
+#main #nav {
+    float: right;
+    margin-right: 8px;
+}
+#main #nav .icon {
+    width: 32px;
+    height: 32px;
+    transition: opacity 0.2s;
+    opacity: 0.87;
+}
+#main #nav .icon:hover {
+    opacity: 1;
+}
+
+#main code {
+    word-wrap: normal;
+    overflow-x: scroll;
+}
+
+#main img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+#main iframe {
+    width: 100%;
+}
+
+#main blockquote,
+#main .meta {
+    position: relative;
+    margin: 1em 0 1em 32px;
+}
+#main blockquote::before,
+#main .meta::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: calc(-16px - 2px / 2);
+    width: 2px;
+    background: rgba(255, 255, 255, 0.87);
 }
