@@ -76,6 +76,7 @@ Main = {
                         Main.mainElem.innerHTML = content;
                         Main.hook(Main.mainElem);
                         document.title = title;
+                        window.scrollTo(0, 0);
                         Main.mainElem.setAttribute('data-fade', 'in');
                     }, Math.max(0, Math.ceil(fadeInEnd - window.performance.now())));
                 })
