@@ -1,18 +1,15 @@
 Main.BG = {
 
-    loadShader(gl, type, src) {
-
-    },
+    dark: false,
 
     init() {
-
-        var canvas = document.getElementById('bg');
-        var main = document.getElementById('main');
+        var canvas = Main.BG.canvas = document.getElementById('bg');
+        var main = Main.mainElem;
 
         var gl = null;
 
         try {
-            gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+            gl = Main.BG.gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
         } catch(e) {
         }
 
@@ -40,24 +37,26 @@ Main.BG = {
             mouse[1] += delta[1] * 0.05;
         }, false);
 
+        // Selfnote: Don't put these into Main.BG.
+
         function loadShader(gl, type, src) {
             var shader = gl.createShader(type);
             gl.shaderSource(shader, src);
             gl.compileShader(shader);
             if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
                 var msg =
-        `Failed compiling shader:
+`Failed compiling shader:
 
-        --------
-        ${type == gl.VERTEX_SHADER ? 'VERTEX_SHADER' : type == gl.FRAGMENT_SHADER ? 'FRAGMENT_SHADER' : '??'}
-        --------
-        ${src}
+--------
+${type == gl.VERTEX_SHADER ? 'VERTEX_SHADER' : type == gl.FRAGMENT_SHADER ? 'FRAGMENT_SHADER' : '??'}
+--------
+${src}
 
-        --------
-        Error:
-        --------
-        ${gl.getShaderInfoLog(shader)}
-        `;
+--------
+Error:
+--------
+${gl.getShaderInfoLog(shader)}
+`;
                 gl.deleteShader(shader);
                 throw new Error(msg);
             }
@@ -162,145 +161,145 @@ Main.BG = {
 
             shaderBG = gl.createProgram();
             gl.attachShader(shaderBG, loadShader(gl, gl.VERTEX_SHADER,
-        `#version 100
-        precision highp float;
+`#version 100
+precision highp float;
 
-        attribute vec4 aVertexPosition;
+attribute vec4 aVertexPosition;
 
-        uniform vec2 uView;
+uniform vec2 uView;
 
-        uniform vec4 uBody;
-        uniform vec3 uEdge;
-        uniform vec3 uTimeFade;
-        uniform vec2 uMouse;
+uniform vec4 uBody;
+uniform vec3 uEdge;
+uniform vec3 uTimeFade;
+uniform vec2 uMouse;
 
-        varying vec4 vBody;
-        varying vec3 vEdge;
-        varying vec3 vTimeFade;
-        varying vec2 vUV;
-        varying vec2 vMouse;
+varying vec4 vBody;
+varying vec3 vEdge;
+varying vec3 vTimeFade;
+varying vec2 vUV;
+varying vec2 vMouse;
 
-        void main() {
-            vBody = uBody;
-            vEdge = uEdge;
-            vTimeFade = uTimeFade;
-            vUV = aVertexPosition.xy * uView;
-            vMouse = uMouse;
+void main() {
+    vBody = uBody;
+    vEdge = uEdge;
+    vTimeFade = uTimeFade;
+    vUV = aVertexPosition.xy * uView;
+    vMouse = uMouse;
 
-            gl_Position = aVertexPosition;
-        }
-        `
+    gl_Position = aVertexPosition;
+}
+`
             ));
             gl.attachShader(shaderBG, loadShader(gl, gl.FRAGMENT_SHADER,
-        `#version 100
-        precision highp float;
+`#version 100
+precision highp float;
 
-        #define PI 3.14159
-        #define TAU 6.28318
+#define PI 3.14159
+#define TAU 6.28318
 
-        #define round(x) (floor(x+0.5))
-        // #define crush(c, x) (floor(x * c + 0.5))
-        #define crush(c, x) (fract(x * c))
+#define round(x) (floor(x+0.5))
+// #define crush(c, x) (floor(x * c + 0.5))
+#define crush(c, x) (fract(x * c))
 
-        uniform sampler2D uSamplerNoise;
+uniform sampler2D uSamplerNoise;
 
-        varying vec4 vBody;
-        varying vec3 vEdge;
-        #define vEdgeScale (vEdge.x)
-        #define vEdgeWidth (vEdge.y)
-        #define vEdgeCount (vEdge.z)
-        varying vec3 vTimeFade;
-        #define vTime (vTimeFade.x)
-        #define vFadeBG (vTimeFade.y)
-        #define vFadeBody (vTimeFade.z)
-        varying vec2 vUV;
-        varying vec2 vMouse;
+varying vec4 vBody;
+varying vec3 vEdge;
+#define vEdgeScale (vEdge.x)
+#define vEdgeWidth (vEdge.y)
+#define vEdgeCount (vEdge.z)
+varying vec3 vTimeFade;
+#define vTime (vTimeFade.x)
+#define vFadeBG (vTimeFade.y)
+#define vFadeBody (vTimeFade.z)
+varying vec2 vUV;
+varying vec2 vMouse;
 
-        float get(vec3 v) {
-            float a = cos(sin(v.x * 3.8) + sin(v.y * 3.8));
-            float b = sin(v.x * 0.47 + v.z * 4.0) * sin(v.y * 0.47);
-            float c = sin(v.x - sin(v.y) + v.z);
-            float d = sin(2.0 * v.x + a) * sin(2.0 * v.y + b) * cos(b + c + 0.1 * v.z);
-            
-            return 1.0 + 0.2 * a + 0.5 * a * c + 0.4 * c + 0.5 * b * d;
-        }
+float get(vec3 v) {
+    float a = cos(sin(v.x * 3.8) + sin(v.y * 3.8));
+    float b = sin(v.x * 0.47 + v.z * 4.0) * sin(v.y * 0.47);
+    float c = sin(v.x - sin(v.y) + v.z);
+    float d = sin(2.0 * v.x + a) * sin(2.0 * v.y + b) * cos(b + c + 0.1 * v.z);
+    
+    return 1.0 + 0.2 * a + 0.5 * a * c + 0.4 * c + 0.5 * b * d;
+}
 
-        void main() {
-            vec2 uv = vUV;
-            float t = vTime;
+void main() {
+    vec2 uv = vUV;
+    float t = vTime;
 
-            // vec2 m = 0.5 + 0.5 * sin(0.5 * PI * (vMouse - 0.5));
-            vec2 m = vMouse;
+    // vec2 m = 0.5 + 0.5 * sin(0.5 * PI * (vMouse - 0.5));
+    vec2 m = vMouse;
 
-            float grow = pow(1.0 - min(1.0, max(0.0, 8.0 * distance(uv, m))), 2.0);
+    float grow = pow(1.0 - min(1.0, max(0.0, 8.0 * distance(uv, m))), 2.0);
 
-            uv += 0.2 * m;
+    uv += 0.2 * m;
 
-            uv.y += t;
+    uv.y += t;
 
-            uv *= vEdgeWidth * 16.0;
+    uv *= vEdgeWidth * 16.0;
 
-            t += 0.1 * m.x + 0.1 * m.y;
+    t += 0.1 * m.x + 0.1 * m.y;
 
-            float cc = get(vec3(uv, t));
-            cc = 0.1 + min(0.8, cc * 0.5);
+    float cc = get(vec3(uv, t));
+    cc = 0.1 + min(0.8, cc * 0.5);
 
-            float growbf = 0.02 * grow;
-            float softbody =
-                smoothstep(-growbf, 0.0, vUV.x - vBody.x) *
-                (1.0 - smoothstep(0.0, growbf, vUV.y - vBody.y)) *
-                (1.0 - smoothstep(0.0, growbf, vUV.x - vBody.z)) *
-                smoothstep(-growbf, 0.0, vUV.y - vBody.w) *
-            1.0;
-            float body = smoothstep(0.0001, 0.04, softbody);
-            
-            softbody *= vFadeBody;
-            body *= vFadeBody;
+    float growbf = 0.02 * grow;
+    float softbody =
+        smoothstep(-growbf, 0.0, vUV.x - vBody.x) *
+        (1.0 - smoothstep(0.0, growbf, vUV.y - vBody.y)) *
+        (1.0 - smoothstep(0.0, growbf, vUV.x - vBody.z)) *
+        smoothstep(-growbf, 0.0, vUV.y - vBody.w) *
+    1.0;
+    float body = smoothstep(0.0001, 0.04, softbody);
+    
+    softbody *= vFadeBody;
+    body *= vFadeBody;
 
-            float edgec = vEdgeCount * 8.0;
+    float edgec = vEdgeCount * 8.0;
 
-            /*
-            float edgef = vEdgeScale * vEdgeWidth * 0.01;
-            edgef *= 1.0 + 7.0 * grow;
+    /*
+    float edgef = vEdgeScale * vEdgeWidth * 0.01;
+    edgef *= 1.0 + 7.0 * grow;
 
-            // float cl = crush(edgec, get(vec3(uv.x - edgef, uv.y, t)));
-            // float cr = crush(edgec, get(vec3(uv.x + edgef, uv.y, t)));
-            // float cu = crush(edgec, get(vec3(uv.x, uv.y - edgef, t)));
-            // float cd = crush(edgec, get(vec3(uv.x, uv.y + edgef, t)));
+    // float cl = crush(edgec, get(vec3(uv.x - edgef, uv.y, t)));
+    // float cr = crush(edgec, get(vec3(uv.x + edgef, uv.y, t)));
+    // float cu = crush(edgec, get(vec3(uv.x, uv.y - edgef, t)));
+    // float cd = crush(edgec, get(vec3(uv.x, uv.y + edgef, t)));
 
-            float clu = crush(edgec, get(vec3(uv.x - edgef, uv.y - edgef, t)));
-            float cru = crush(edgec, get(vec3(uv.x + edgef, uv.y - edgef, t)));
-            float cld = crush(edgec, get(vec3(uv.x - edgef, uv.y + edgef, t)));
-            float crd = crush(edgec, get(vec3(uv.x + edgef, uv.y + edgef, t)));
+    float clu = crush(edgec, get(vec3(uv.x - edgef, uv.y - edgef, t)));
+    float cru = crush(edgec, get(vec3(uv.x + edgef, uv.y - edgef, t)));
+    float cld = crush(edgec, get(vec3(uv.x - edgef, uv.y + edgef, t)));
+    float crd = crush(edgec, get(vec3(uv.x + edgef, uv.y + edgef, t)));
 
-            float d = smoothstep(0.0, 1.0,
-                // abs(cl - cr) +
-                // abs(cu - cd) +
-                abs(clu - crd) +
-                abs(cld - cru)
-            );
-            */
+    float d = smoothstep(0.0, 1.0,
+        // abs(cl - cr) +
+        // abs(cu - cd) +
+        abs(clu - crd) +
+        abs(cld - cru)
+    );
+    */
 
-            float cf = get(vec3(0.1 * edgec * uv, t));
-            float d = smoothstep(0.95, 1.0,
-                0.5 * grow + abs(sin(PI * edgec * cf))
-            );
-            d = smoothstep(0.8, 0.9, pow(d, 3.0));
+    float cf = get(vec3(0.1 * edgec * uv, t));
+    float d = smoothstep(0.95, 1.0,
+        0.5 * grow + abs(sin(PI * edgec * cf))
+    );
+    d = smoothstep(0.8, 0.9, pow(d, 3.0));
 
-            cc *= vFadeBG;
-            d *= vFadeBG;
+    cc *= vFadeBG;
+    d *= vFadeBG;
 
-            float c = cc * d;
+    float c = cc * d;
 
-            c = (1.0 - body) * c + body * (
-                0.1 + 0.05 * sin(PI * cc) + d * 0.5 * max(0.01, vUV.y - vBody.y + 0.2)
-            );
+    c = (1.0 - body) * c + body * (
+        0.1 + 0.05 * sin(PI * cc) + d * 0.5 * max(0.01, vUV.y - vBody.y + 0.2)
+    );
 
-            c += vFadeBG * 0.01 * texture2D(uSamplerNoise, vUV).a;
+    c += vFadeBG * 0.01 * texture2D(uSamplerNoise, vUV).a;
 
-            gl_FragColor = vec4(c, c, c, 1.0);
-        }
-        `
+    gl_FragColor = vec4(c, c, c, 1.0);
+}
+`
             ));
             gl.linkProgram(shaderBG);
             
@@ -323,33 +322,33 @@ Main.BG = {
 
             shaderBlit = gl.createProgram();
             gl.attachShader(shaderBlit, loadShader(gl, gl.VERTEX_SHADER,
-        `#version 100
-        precision mediump float;
+`#version 100
+precision mediump float;
 
-        attribute vec4 aVertexPosition;
+attribute vec4 aVertexPosition;
 
-        uniform vec2 uView;
+uniform vec2 uView;
 
-        varying vec2 vUV;
+varying vec2 vUV;
 
-        void main() {
-            vUV = (aVertexPosition.xy * 0.5 + 0.5) * uView;
-            gl_Position = aVertexPosition;
-        }
-        `
+void main() {
+    vUV = (aVertexPosition.xy * 0.5 + 0.5) * uView;
+    gl_Position = aVertexPosition;
+}
+`
             ));
             gl.attachShader(shaderBlit, loadShader(gl, gl.FRAGMENT_SHADER,
-        `#version 100
-        precision mediump float;
+`#version 100
+precision mediump float;
 
-        uniform sampler2D uSampler;
+uniform sampler2D uSampler;
 
-        varying vec2 vUV;
+varying vec2 vUV;
 
-        void main() {
-            gl_FragColor = texture2D(uSampler, vUV);
-        }
-        `
+void main() {
+    gl_FragColor = texture2D(uSampler, vUV);
+}
+`
             ));
             gl.linkProgram(shaderBlit);
             
@@ -403,6 +402,8 @@ Main.BG = {
         var frameskipped = 0;
         var then;
         var start;
+        var delta;
+        var fade = 0;
         var _set_data_bg = false;
         function render(_now) {
             var now = window.performance.now();
@@ -435,8 +436,22 @@ Main.BG = {
                 if (dynscale != dynscaleOld)
                     console.log("High performance. Scale: ", dynscale);
             }
+            delta = now - then;
             then = now;
             frameskipped = 0;
+
+            if (now > 200) {
+                if (!Main.BG.dark) {
+                    fade += delta / 400;
+                    fade = Math.max(0, Math.min(1, fade));
+                } else if (fade < 0.3) {
+                    fade += delta / 400;
+                    fade = Math.max(0, Math.min(0.3, fade));
+                } else if (fade > 0.3) {
+                    fade -= delta / 400;
+                    fade = Math.max(0.3, Math.min(1.0, fade));
+                }
+            }
 
             var density = (
                 window.devicePixelRatio ||
@@ -526,7 +541,7 @@ Main.BG = {
                 infoBG.uniformLocations.timeFade,
                 [
                     (nowoffs / 100 % 1024) + 0.03 * now / 1000,
-                    Math.max(0, Math.min(1, (now / 1000 - 0.5) / 0.2)),
+                    fade,
                     bodyStyle.getPropertyValue('opacity')
                 ]
             );
