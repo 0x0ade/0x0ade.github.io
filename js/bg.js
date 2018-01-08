@@ -287,7 +287,7 @@ void main() {
     d = smoothstep(0.8, 0.9, pow(d, 3.0));
 
     cc *= vFadeBG;
-    d *= vFadeBG;
+    d *= pow(vFadeBG, 2.0);
 
     float c = cc * d;
 
@@ -295,7 +295,7 @@ void main() {
         0.1 + 0.05 * sin(PI * cc) + d * 0.5 * max(0.01, vUV.y - vBody.y + 0.2)
     );
 
-    c += vFadeBG * 0.01 * texture2D(uSamplerNoise, vUV).a;
+    c += pow(vFadeBG, 2.0) * 0.01 * texture2D(uSamplerNoise, vUV).a;
 
     gl_FragColor = vec4(c, c, c, 1.0);
 }
@@ -403,6 +403,7 @@ void main() {
         var then;
         var start;
         var delta;
+        var time = 0;
         var fade = 0;
         var _set_data_bg = false;
         function render(_now) {
@@ -452,6 +453,7 @@ void main() {
                     fade = Math.max(0.3, Math.min(1.0, fade));
                 }
             }
+            time += delta * fade;
 
             var density = (
                 window.devicePixelRatio ||
@@ -540,7 +542,7 @@ void main() {
             gl.uniform3fv(
                 infoBG.uniformLocations.timeFade,
                 [
-                    (nowoffs / 100 % 1024) + 0.03 * now / 1000,
+                    (nowoffs / 100 % 1024) + 0.03 * time / 1000,
                     fade,
                     bodyStyle.getPropertyValue('opacity')
                 ]
