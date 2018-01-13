@@ -455,13 +455,13 @@ void main() {
             }
             time += delta * fade;
 
-            var density = (
+            var density = 1; /*(
                 window.devicePixelRatio ||
                 window.webkitDevicePixelRatio ||
                 window.mozDevicePixelRatio ||
                 window.opDevicePixelRatio ||
                 1
-            );
+            );*/
             var dyndensity = density / dynscale;
 
             var width = canvas.clientWidth;
