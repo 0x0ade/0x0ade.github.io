@@ -533,10 +533,10 @@ void main() {
             gl.uniform4fv(
                 infoBG.uniformLocations.body,
                 [
-                    vwidth * (bodyBounds.x / width - 0.5),
-                    vheight * ((1.0 - bodyBounds.y / height) - 0.5),
-                    vwidth * ((bodyBounds.x + bodyBounds.width) / width - 0.5),
-                    vheight * ((1.0 - (bodyBounds.y + bodyBounds.height) / height) - 0.5),
+                    vwidth * (bodyBounds.left / width - 0.5),
+                    vheight * ((1.0 - bodyBounds.top / height) - 0.5),
+                    vwidth * ((bodyBounds.left + bodyBounds.width) / width - 0.5),
+                    vheight * ((1.0 - (bodyBounds.top + bodyBounds.height) / height) - 0.5),
                 ]
             );
             gl.uniform3fv(
