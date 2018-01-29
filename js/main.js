@@ -99,6 +99,35 @@ window.addEventListener('popstate', e => {
     Main.goto(e.state.path, false);
 }, false);
 
+// Webkit seems to hate us.
+((document, window) => {
+    var fullscreenElement;
+    var scrollX;
+    var scrollY;
+    document.addEventListener('fullscreenchange', e => {
+        if (fullscreenElement === document.fullscreenElement)
+            return;
+
+        if (fullscreenElement) {
+            document.body.classList.remove('fullscreen');
+            fullscreenElement.classList.remove('fullscreen');
+        }
+
+        if (document.fullscreenElement) {
+            if (!fullscreenElement) {
+            // Thanks, webkit, even more! window.scroll* == 0
+                scrollX = window.scrollX;
+                scrollY = window.scrollY;
+            }
+            document.body.classList.add('fullscreen');
+            document.fullscreenElement.classList.add('fullscreen');
+        } else {
+            window.scrollTo(scrollX, scrollY);
+        }
+        fullscreenElement = document.fullscreenElement;
+    }, false);
+})(document, window);
+
 document.addEventListener('DOMContentLoaded', e => {
     history.replaceState({
         path: window.location.pathname

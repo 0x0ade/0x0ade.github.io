@@ -4,10 +4,10 @@ layout: default
 <article class="home">
     {{ content }}
 
-    <header class="meta">
+    <header>
         <h1>&gt; info</h1>
     </header>
-    <article class="post-preview">
+    <article class="post-preview bio">
         <code>
             name: Maik Macho (spoken: ma - ho)<br>
             nick: 0x0ade (spoken: ox - oh - aid)<br>
@@ -23,7 +23,7 @@ layout: default
     </article>
 
     {% if site.posts.size > 0 %}
-    <header class="meta">
+    <header>
         <h1>&gt; feed</h1>
     </header>
     {% for post in site.posts %}

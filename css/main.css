@@ -11,7 +11,7 @@ body {
     padding: 0;
     line-height: 1.5em;
 }
-tt, code, kbd, samp, *[data-tip]::after, #version, #main .meta {
+tt, code, kbd, samp, *[data-tip]::after, #version, #main .meta, h1, h2, h3, h4, h5, h6 {
     font-family: 'Fira Code', monospace;
 }
 
@@ -33,9 +33,17 @@ tt, code, kbd, samp, *[data-tip]::after, #version, #main .meta {
     padding: 32px;
     z-index: 1001;
     pointer-events: none;
+    transition: opacity 0.2s;
+    opacity: 1;
+}
+.fullscreen #header {
+    opacity: 0;
 }
 #header .icon {
     pointer-events: auto;
+}
+.fullscreen #header .icon {
+    pointer-events: none;
 }
 #footer {
     left: 0;
@@ -139,9 +147,10 @@ body:not([data-bg="on"]) #main {
 
 h1, h2, h3, h4, h5, h6 {
     font-weight: lighter;
+    z-index: 0;
 }
 h1 {
-    font-size: 2em;
+    font-size: 32px;
     line-height: 1.5em;
 }
 h1 a {
@@ -166,13 +175,15 @@ a:hover, a:focus, a:active {
 
 #main #nav {
     float: right;
-    margin-right: 8px;
+    margin: 8px;
+    z-index: 10;
 }
 #main #nav .icon {
     width: 32px;
     height: 32px;
     transition: opacity 0.2s;
     opacity: 0.87;
+    margin-left: 8px;
 }
 #main #nav .icon:hover {
     opacity: 1;
@@ -192,13 +203,52 @@ a:hover, a:focus, a:active {
     width: 100%;
 }
 
+/* Webkit seems to hate us. */
+.fullscreen #main-wrapper,
+.fullscreen #main-wrapper > #main,
+.fullscreen #main-wrapper > #main .fullscreen
+{
+    display: block;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: 0 !important;
+}
+.fullscreen #main-wrapper > #main .fullscreen {
+    z-index: 2000 !important;
+}
+
 #main blockquote,
-#main .meta {
+#main .meta,
+tt,
+code,
+kbd,
+samp,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
     position: relative;
-    margin: 1em 0 1em 32px;
+    /*margin: 1em 0 1em 32px;*/
 }
 #main blockquote::before,
-#main .meta::before {
+#main .meta::before,
+tt::before,
+code::before,
+kbd::before,
+samp::before,
+h1::before,
+h2::before,
+h3::before,
+h4::before,
+h5::before,
+h6::before {
     content: "";
     position: absolute;
     top: 0;
