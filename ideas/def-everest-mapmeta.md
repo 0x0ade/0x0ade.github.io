@@ -1,5 +1,7 @@
-# Crappy Everest level term definition list
-AKA: The document ade tried to write while Cruor interrupted him multiple times.
+---
+layout: page
+title: "Crappy Everest level term definition list"
+---
 
 For an up-to-date list of meta properties, check [the MapMeta source](https://github.com/EverestAPI/Everest/blob/master/Celeste.Mod.mm/Mod/Meta/MapMeta.cs).
 
