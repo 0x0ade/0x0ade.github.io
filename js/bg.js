@@ -23,6 +23,7 @@ Main.BG = {
         }, false);
 
         var motion = [0, 0];
+        /*
         window.addEventListener('deviceorientation', e => {
             var x = e.gamma;
             var y = -e.beta;
@@ -36,8 +37,9 @@ Main.BG = {
             mouse[0] += delta[0] * 0.05;
             mouse[1] += delta[1] * 0.05;
         }, false);
+        */
 
-        // Selfnote: Don't put these into Main.BG.
+        // Don't put the following util functions into Main.BG.
 
         function loadShader(gl, type, src) {
             var shader = gl.createShader(type);
@@ -444,13 +446,13 @@ void main() {
             if (now > 200) {
                 if (!Main.BG.dark) {
                     fade += delta / 400;
-                    fade = Math.max(0, Math.min(1, fade));
+                    fade = Math.max(0, Math.min(0.6, fade));
                 } else if (fade < 0.3) {
                     fade += delta / 400;
                     fade = Math.max(0, Math.min(0.3, fade));
                 } else if (fade > 0.3) {
                     fade -= delta / 400;
-                    fade = Math.max(0.3, Math.min(1.0, fade));
+                    fade = Math.max(0.3, Math.min(0.6, fade));
                 }
             }
             time += delta * fade;

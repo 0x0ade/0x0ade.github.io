@@ -173,10 +173,22 @@ a:hover, a:focus, a:active {
     margin-bottom: 64px;
 }
 
+#main #title {
+    max-width: calc(100% - 128px);
+}
 #main #nav {
     float: right;
     margin: 8px;
     z-index: 10;
+}
+@media only screen and (min-width: 0px) and (max-width: 600px) {
+    #main #title {
+        max-width: none;
+    }
+    #main #nav {
+        float: none;
+        text-align: right;
+    }
 }
 #main #nav .icon {
     width: 32px;

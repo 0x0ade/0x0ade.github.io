@@ -59,9 +59,12 @@ Main.Audio = {
 
         Main.Audio.master = Main.Audio.masterGain;
 
+        Main.Audio.mute();
+        Main.Audio.masterGain.gain.setTargetAtTime(0, Main.Audio.context.currentTime, 0);
+
         console.log('fetching BGMGenerator');
         Main.Audio.context.audioWorklet.addModule('/js/bgm-worklet.js').then(() => {
-            document.body.setAttribute('data-bgm', 'on');
+            document.body.setAttribute('data-bgm', 'off');
             console.log('connecting BGMGenerator');
             Main.Audio.generator = new AudioWorkletNode(Main.Audio.context, 'BGMGenerator');
             Main.Audio.generator.connect(Main.Audio.master);
