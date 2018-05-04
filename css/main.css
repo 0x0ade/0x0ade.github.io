@@ -190,6 +190,10 @@ a:after {
     z-index: 10;
 }
 @media only screen and (min-width: 0px) and (max-width: 600px) {
+    #main-wrapper {
+        margin-left: 0;
+        margin-right: 0;
+    }
     #main #title {
         max-width: none;
     }
