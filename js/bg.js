@@ -233,9 +233,10 @@ void main() {
     // vec2 m = 0.5 + 0.5 * sin(0.5 * PI * (vMouse - 0.5));
     vec2 m = vMouse;
 
-    float grow = pow(1.0 - min(1.0, max(0.0, 8.0 * distance(uv, m))), 2.0);
+    float grow = 1.0 - min(1.0, max(0.0, 8.0 * distance(uv, m)));
+    grow = grow * grow;
 
-    uv += 0.2 * m;
+    uv += 0.05 * m;
 
     uv.y += t;
 
@@ -253,7 +254,13 @@ void main() {
         (1.0 - smoothstep(0.0, growbf, vUV.x - vBody.z)) *
         smoothstep(-growbf, 0.0, vUV.y - vBody.w) *
     1.0;
-    float body = smoothstep(0.0001, 0.04, softbody);
+    float shadowbody =
+        smoothstep(-0.08 - growbf, 0.0, vUV.x - vBody.x - 0.05) *
+        (1.0 - smoothstep(0.0, 0.08 + growbf, vUV.y - vBody.y + 0.05)) *
+        (1.0 - smoothstep(0.0, 0.08 + growbf, vUV.x - vBody.z + 0.05)) *
+        smoothstep(-0.08 - growbf, 0.0, vUV.y - vBody.w - 0.05) *
+    1.0;
+    float body = smoothstep(0.0001, 0.02, softbody);
     
     softbody *= vFadeBody;
     body *= vFadeBody;
@@ -286,18 +293,24 @@ void main() {
     float d = smoothstep(0.95, 1.0,
         0.5 * grow + abs(sin(PI * edgec * cf))
     );
-    d = smoothstep(0.8, 0.9, pow(d, 3.0));
+    d = smoothstep(0.8 - 0.8 * body, 0.9 + body * 0.1, d * d * d);
 
     cc *= vFadeBG;
-    d *= pow(vFadeBG, 2.0);
+    d *= vFadeBG * vFadeBG;
 
     float c = cc * d;
 
     c = (1.0 - body) * c + body * (
-        0.1 + 0.05 * sin(PI * cc) + d * 0.5 * max(0.01, vUV.y - vBody.y + 0.2)
+        0.05 + 0.03 * sin(PI * cc) + d * 0.0365
     );
 
-    c += pow(vFadeBG, 2.0) * 0.01 * texture2D(uSamplerNoise, vUV).a;
+    c -= body * 0.05;
+
+    c += 0.2 * vFadeBody * max(0.0, smoothstep(0.0, 0.5, shadowbody) - body);
+
+    c += vFadeBG * vFadeBG * 0.01 * texture2D(uSamplerNoise, vUV).a;
+
+    c = 0.95 - c;
 
     gl_FragColor = vec4(c, c, c, 1.0);
 }

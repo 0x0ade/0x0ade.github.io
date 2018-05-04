@@ -47,8 +47,8 @@
 
 <style>
 	:root {
-		--bg: white;
-		--fg: black;
+		--bg: black;
+		--fg: white;
 	}
 
 	#bg {
