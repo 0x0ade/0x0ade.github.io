@@ -290,7 +290,7 @@ void main() {
     */
 
     float cf = get(vec3(0.1 * edgec * uv - vBody.xy * 0.25, t));
-    float d = smoothstep(0.95, 1.0,
+    float d = smoothstep(0.95 - 0.95 * body, 1.0,
         0.5 * grow + abs(sin(PI * edgec * cf))
     );
     d = smoothstep(0.8 - 0.8 * body, 0.9 + body * 0.1, d * d * d);
@@ -301,7 +301,7 @@ void main() {
     float c = cc * d;
 
     c = (1.0 - body) * c + body * (
-        0.05 + 0.03 * sin(PI * cc) + d * 0.0365
+        0.05 + 0.03 * sin(PI * cc) + d * 0.02
     );
 
     c -= body * 0.05;

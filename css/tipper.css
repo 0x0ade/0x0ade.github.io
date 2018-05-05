@@ -23,6 +23,7 @@
 *:not([data-tip-dir])::after,
 *[data-tip-dir="up"]::after {
     left: 50%;
+    top: 0;
     transform: translate(-50%, calc(-100% + 8px));
 }
 *:not([data-tip-dir]):hover::after,

@@ -4,40 +4,14 @@
 	<clipPath id="clip-main"><circle cx="150" cy="150" r="150.5" stroke-width="0" /></clipPath>
 </defs>
 
-<circle fill="white" id="bg" cx="150" cy="150" r="150" stroke-width="0" />
+<circle fill="black" id="bg" cx="150" cy="150" r="150" stroke-width="0" />
 
 <g transform="translate(0,0)" clip-path="url(#clip-main)">
 	<path
-	stroke="black"
+	stroke="white"
 	class="main"
 	d="M285,240 L150,240  A-90,-90 0 0,1 60,150  A90,-90 0 0,1 150,60  A90,90 0 0,1 240,150  L240,195  A45,45 0 0,0 285,240  A-45,-45 0 0,1 240,195  L240,150  A-45,-45 0 0,0 195,105  A-45,45 0 0,0 150,150  A45,45 0 0,0 195,195  A30,30 0 0,1 225,225  L225,240  L150,240  A-45,-45 0 0,1 105,195  A45,-45 0 0,1 150,150  "
-	stroke-dasharray="50" pathLength="50">
-		<animate attributeType="XML" attributeName="stroke-dashoffset"
-		dur="1s" repeatCount="0"
-		values="50;0"
-		/>
-	</path>
-
-	<path
-	stroke="black"
-	class="extra"
-	d="M285,240 L150,240  A-90,-90 0 0,1 60,150  A90,-90 0 0,1 150,60  A90,90 0 0,1 240,150  L240,195  A45,45 0 0,0 285,240  A-45,-45 0 0,1 240,195  L240,150  A-45,-45 0 0,0 195,105  A-45,45 0 0,0 150,150  A45,45 0 0,0 195,195  A30,30 0 0,1 225,225  L225,240  L150,240  A-45,-45 0 0,1 105,195  A45,-45 0 0,1 150,150  "
-	stroke-dasharray="50" pathLength="50">
-		<animate attributeType="XML" attributeName="stroke-dashoffset"
-		dur="1s" repeatCount="0"
-		values="47;-3"
-		/>
-	</path>
-
-	<path
-	stroke="black"
-	class="extra"
-	d="M285,240 L150,240  A-90,-90 0 0,1 60,150  A90,-90 0 0,1 150,60  A90,90 0 0,1 240,150  L240,195  A45,45 0 0,0 285,240  A-45,-45 0 0,1 240,195  L240,150  A-45,-45 0 0,0 195,105  A-45,45 0 0,0 150,150  A45,45 0 0,0 195,195  A30,30 0 0,1 225,225  L225,240  L150,240  A-45,-45 0 0,1 105,195  A45,-45 0 0,1 150,150  "
-	stroke-dasharray="50" pathLength="50">
-		<animate attributeType="XML" attributeName="stroke-dashoffset"
-		dur="1s" repeatCount="0"
-		values="53;3"
-		/>
+	>
 	</path>
 </g>
 
