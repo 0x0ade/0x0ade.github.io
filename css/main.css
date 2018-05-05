@@ -24,23 +24,47 @@ tt, code, kbd, samp, *[data-tip]::after, #version, #main .meta {
     height: 100vh;
 }
 
-#header {
+#header,
+#header:before {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
-    height: 128px;
-    padding: 32px;
-    z-index: 1001;
+    height: 64px;
+    padding: 8px 128px;
     pointer-events: none;
+}
+#header {
+    z-index: 1001;
     transition: opacity 0.2s;
     opacity: 1;
 }
 .fullscreen #header {
     opacity: 0;
 }
+#header:before {
+    content: "";
+    position: fixed;
+    opacity: 0.1;
+    background: linear-gradient(180deg,
+        rgba(0, 0, 0, 1.000) 0%,
+        rgba(0, 0, 0, 0.738) 19%,
+        rgba(0, 0, 0, 0.541) 34%,
+        rgba(0, 0, 0, 0.382) 47%,
+        rgba(0, 0, 0, 0.278) 56.5%,
+        rgba(0, 0, 0, 0.194) 65%,
+        rgba(0, 0, 0, 0.126) 73%,
+        rgba(0, 0, 0, 0.075) 80.2%,
+        rgba(0, 0, 0, 0.042) 86.1%,
+        rgba(0, 0, 0, 0.021) 91%,
+        rgba(0, 0, 0, 0.008) 95.2%,
+        rgba(0, 0, 0, 0.002) 98.2%,
+        rgba(0, 0, 0, 0.000) 100%
+    );
+}
 #header .icon {
     pointer-events: auto;
+    margin-left: 8px;
 }
 .fullscreen #header .icon {
     pointer-events: none;
@@ -193,19 +217,6 @@ a:after {
     margin: 8px;
     z-index: 10;
 }
-@media only screen and (min-width: 0px) and (max-width: 600px) {
-    #main-wrapper {
-        margin-left: 0;
-        margin-right: 0;
-    }
-    #main #title {
-        max-width: none;
-    }
-    #main #nav {
-        float: none;
-        text-align: right;
-    }
-}
 #main #nav .icon {
     width: 32px;
     height: 32px;
@@ -232,31 +243,30 @@ a:after {
     max-height: 100%;
 }
 #main .icon img {
-    max-width: unset;
-    max-height: unset;
+    max-width: 300px;
+    max-height: 300px;
 }
 
 #main iframe {
     width: 100%;
 }
 
-/* Webkit seems to hate us. */
-.fullscreen #main-wrapper,
-.fullscreen #main-wrapper > #main,
-.fullscreen #main-wrapper > #main .fullscreen
-{
-    display: block;
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100vw !important;
-    height: 100vh !important;
-    padding: 0 !important;
-    margin: 0 !important;
-    border: 0 !important;
-}
-.fullscreen #main-wrapper > #main .fullscreen {
-    z-index: 2000 !important;
+@media only screen and (min-width: 0px) and (max-width: 900px) {
+    #header {
+        padding: 8px;
+    }
+
+    #main-wrapper {
+        margin-left: 0;
+        margin-right: 0;
+    }
+    #main #title {
+        max-width: none;
+    }
+    #main #nav {
+        float: none;
+        text-align: right;
+    }
 }
 
 #main blockquote,
@@ -290,7 +300,26 @@ h6::before {
     position: absolute;
     top: 0;
     bottom: 0;
-    left: calc(-16px - 2px / 2);
+    left: calc(-16px - 2px);
     width: 2px;
     background: rgba(0, 0, 0, 0.87);
+}
+
+/* Webkit seems to hate us. */
+.fullscreen #main-wrapper,
+.fullscreen #main-wrapper > #main,
+.fullscreen #main-wrapper > #main .fullscreen
+{
+    display: block;
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border: 0 !important;
+}
+.fullscreen #main-wrapper > #main .fullscreen {
+    z-index: 2000 !important;
 }
