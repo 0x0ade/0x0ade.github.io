@@ -312,7 +312,10 @@ void main() {
 
     c = 0.95 - c;
 
-    gl_FragColor = vec4(c, c, c, 1.0);
+    float tintHead = max(0.0, body * (0.25 + vUV.y - vBody.y));
+    c -= tintHead * 0.2;
+
+    gl_FragColor = vec4(vec3(c), 1.0);
 }
 `
             ));
