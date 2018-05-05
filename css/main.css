@@ -31,7 +31,7 @@ tt, code, kbd, samp, *[data-tip]::after, #version, #main .meta {
     left: 0;
     right: 0;
     height: 64px;
-    padding: 8px 128px;
+    padding: 32px;
     pointer-events: none;
 }
 #header {
