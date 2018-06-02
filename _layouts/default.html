@@ -1,15 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-    {% include head.html %}
-    <body>
-        {% include header.html %}
-        <moddoc>
-            <div id="main-wrapper">
-                <div id="main">
-                    {{ content }}
-                </div>
-            </div>
-        </moddoc>
-        {% include footer.html %}
-    </body>
-</html>
+---
+layout: naked
+---
+<div id="main-wrapper">
+    <div id="main">
+        {{ content }}
+    </div>
+</div>

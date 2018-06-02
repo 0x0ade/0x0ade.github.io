@@ -2,7 +2,7 @@ html {
     min-height: 100vh;
 }
 body {
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'OverpassRegular', sans-serif;
     background: rgb(225, 225, 225);
     color: rgba(0, 0, 0, 0.87);
     width: 100vw;
@@ -13,7 +13,7 @@ body {
     will-change: opacity; /* Fix mix-blend-mode in Chrome. */
 }
 tt, code, kbd, samp, *[data-tip]::after, #version, #main .meta {
-    font-family: 'Inconsolata', monospace;
+    font-family: 'OverpassMonoRegular', monospace;
 }
 
 #bg {

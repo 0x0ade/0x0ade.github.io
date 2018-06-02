@@ -1,0 +1,4 @@
+---
+layout: naked
+title: "Dashboard"
+---
