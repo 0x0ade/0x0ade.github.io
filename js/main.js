@@ -53,7 +53,7 @@ Main = {
                 fetch(path)
                 .then(response => response.text())
                 .then(body => {
-                    if (!body.startsWith('<!DOCTYPE html>') || body.indexOf('<!-- MODDOC -->') === -1)
+                    if (!body.startsWith('<!DOCTYPE html>') || body.indexOf('<moddoc>') === -1)
                         throw null;
                     
                     // "Parsing" HTML in the worst way possible.
@@ -63,9 +63,9 @@ Main = {
                     var title = body.substring(titleIStart + '<title>'.length, titleIEnd);
                     title = Main.domParser.parseFromString(title, 'text/html').documentElement.textContent;
                     
-                    var contentIStart = body.indexOf('<!-- MODDOC CONTENT START -->');
-                    var contentIEnd = body.indexOf('<!-- MODDOC CONTENT END -->', contentIEnd);
-                    var content = body.substring(contentIStart + '<!-- MODDOC CONTENT START -->'.length, contentIEnd);
+                    var contentIStart = body.indexOf('<moddoc>');
+                    var contentIEnd = body.indexOf('</moddoc>', contentIStart);
+                    var content = body.substring(contentIStart + '<moddoc>'.length, contentIEnd);
 
                     if (manual)
                         history.pushState({
@@ -73,7 +73,8 @@ Main = {
                         }, '', path);
                     
                     setTimeout(() => {
-                        Main.mainElem.innerHTML = content;
+                        Main.moddoc.innerHTML = content;
+                        Main.mainElem = document.getElementById('main');
                         Main.hook(Main.mainElem);
                         document.title = title;
                         if (manual && (!window.location.hash || window.location.hash.length < 1))
@@ -83,7 +84,7 @@ Main = {
                         Main.mainElem.setAttribute('data-fade', 'in');
                     }, Math.max(0, Math.ceil(fadeInEnd - window.performance.now())));
                 })
-                .catch(() => window.location = path);
+                // .catch(() => window.location = path);
             }
         }
 
@@ -133,6 +134,7 @@ document.addEventListener('DOMContentLoaded', e => {
         path: window.location.pathname
     }, '', window.location.pathname);
 
+    Main.moddoc = document.getElementsByTagName('moddoc')[0];
     Main.mainElem = document.getElementById('main');
     Main.hook(Main.mainElem);
 

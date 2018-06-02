@@ -4,7 +4,6 @@ Main.BG = {
 
     init() {
         var canvas = Main.BG.canvas = document.getElementById('bg');
-        var main = Main.mainElem;
 
         var gl = null;
 
@@ -170,19 +169,16 @@ attribute vec4 aVertexPosition;
 
 uniform vec2 uView;
 
-uniform vec4 uBody;
 uniform vec3 uEdge;
-uniform vec3 uTimeFade;
+uniform vec2 uTimeFade;
 uniform vec2 uMouse;
 
-varying vec4 vBody;
 varying vec3 vEdge;
-varying vec3 vTimeFade;
+varying vec2 vTimeFade;
 varying vec2 vUV;
 varying vec2 vMouse;
 
 void main() {
-    vBody = uBody;
     vEdge = uEdge;
     vTimeFade = uTimeFade;
     vUV = aVertexPosition.xy * uView;
@@ -205,15 +201,13 @@ precision highp float;
 
 uniform sampler2D uSamplerNoise;
 
-varying vec4 vBody;
 varying vec3 vEdge;
 #define vEdgeScale (vEdge.x)
 #define vEdgeWidth (vEdge.y)
 #define vEdgeCount (vEdge.z)
-varying vec3 vTimeFade;
+varying vec2 vTimeFade;
 #define vTime (vTimeFade.x)
 #define vFadeBG (vTimeFade.y)
-#define vFadeBody (vTimeFade.z)
 varying vec2 vUV;
 varying vec2 vMouse;
 
@@ -248,23 +242,6 @@ void main() {
     cc = 0.1 + min(0.8, cc * 0.5);
 
     float growbf = 0.02 * grow;
-    float softbody =
-        smoothstep(-growbf, 0.0, vUV.x - vBody.x) *
-        (1.0 - smoothstep(0.0, growbf, vUV.y - vBody.y)) *
-        (1.0 - smoothstep(0.0, growbf, vUV.x - vBody.z)) *
-        smoothstep(-growbf, 0.0, vUV.y - vBody.w) *
-    1.0;
-    float shadowbody =
-        smoothstep(-0.08 - growbf, 0.0, vUV.x - vBody.x - 0.05) *
-        (1.0 - smoothstep(0.0, 0.08 + growbf, vUV.y - vBody.y + 0.05)) *
-        (1.0 - smoothstep(0.0, 0.08 + growbf, vUV.x - vBody.z + 0.05)) *
-        smoothstep(-0.08 - growbf, 0.0, vUV.y - vBody.w - 0.05) *
-    1.0;
-    float body = smoothstep(0.0001, 0.02, softbody);
-    
-    softbody *= vFadeBody;
-    body *= vFadeBody;
-
     float edgec = vEdgeCount * 8.0;
 
     /*
@@ -289,31 +266,20 @@ void main() {
     );
     */
 
-    float cf = get(vec3(0.1 * edgec * uv - vBody.xy * 0.25, t));
-    float d = smoothstep(0.95 - 0.95 * body, 1.0,
+    float cf = get(vec3(0.1 * edgec * uv, t));
+    float d = smoothstep(0.95, 1.0,
         0.5 * grow + abs(sin(PI * edgec * cf))
     );
-    d = smoothstep(0.8 - 0.8 * body, 0.9 + body * 0.1, d * d * d);
+    d = smoothstep(0.8, 0.9, d * d * d);
 
     cc *= vFadeBG;
     d *= vFadeBG * vFadeBG;
 
     float c = cc * d;
 
-    c = (1.0 - body) * c + body * (
-        0.05 + 0.03 * sin(PI * cc) + d * 0.02
-    );
-
-    c -= body * 0.05;
-
-    c += 0.2 * vFadeBody * max(0.0, smoothstep(0.0, 0.5, shadowbody) - body);
-
     c += vFadeBG * vFadeBG * 0.01 * texture2D(uSamplerNoise, vUV).a;
 
     c = 0.95 - c;
-
-    float tintHead = max(0.0, body * (0.25 + vUV.y - vBody.y));
-    c -= tintHead * 0.2;
 
     gl_FragColor = vec4(vec3(c), 1.0);
 }
@@ -331,7 +297,6 @@ void main() {
                 uniformLocations: {
                     view: gl.getUniformLocation(shaderBG, 'uView'),
                     samplerNoise: gl.getUniformLocation(shaderBG, 'uSamplerNoise'),
-                    body: gl.getUniformLocation(shaderBG, 'uBody'),
                     edge: gl.getUniformLocation(shaderBG, 'uEdge'),
                     timeFade: gl.getUniformLocation(shaderBG, 'uTimeFade'),
                     mouse: gl.getUniformLocation(shaderBG, 'uMouse'),
@@ -546,23 +511,11 @@ void main() {
             gl.viewport(0, 0, width * dyndensity, height * dyndensity);
             
             gl.useProgram(shaderBG);
-            var bodyBounds = main.getBoundingClientRect();
-            var bodyStyle = window.getComputedStyle(main);
-            gl.uniform4fv(
-                infoBG.uniformLocations.body,
-                [
-                    vwidth * (bodyBounds.left / width - 0.5),
-                    vheight * ((1.0 - bodyBounds.top / height) - 0.5),
-                    vwidth * ((bodyBounds.left + bodyBounds.width) / width - 0.5),
-                    vheight * ((1.0 - (bodyBounds.top + bodyBounds.height) / height) - 0.5),
-                ]
-            );
-            gl.uniform3fv(
+            gl.uniform2fv(
                 infoBG.uniformLocations.timeFade,
                 [
                     (nowoffs / 100 % 1024) + 0.03 * time / 1000,
-                    fade,
-                    bodyStyle.getPropertyValue('opacity')
+                    fade
                 ]
             );
             gl.uniform2fv(

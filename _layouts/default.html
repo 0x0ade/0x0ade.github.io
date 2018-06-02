@@ -1,16 +1,15 @@
 <!DOCTYPE html>
-<!-- MODDOC -->
 <html lang="en">
     {% include head.html %}
     <body>
         {% include header.html %}
-        <div id="main-wrapper">
-            <div id="main">
-                <!-- MODDOC CONTENT START -->
-                {{ content }}
-                <!-- MODDOC CONTENT END -->
+        <moddoc>
+            <div id="main-wrapper">
+                <div id="main">
+                    {{ content }}
+                </div>
             </div>
-        </div>
+        </moddoc>
         {% include footer.html %}
     </body>
 </html>

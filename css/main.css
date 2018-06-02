@@ -3,13 +3,14 @@ html {
 }
 body {
     font-family: 'Montserrat', sans-serif;
-    background: rgba(239, 239, 239, 1);
+    background: rgb(225, 225, 225);
     color: rgba(0, 0, 0, 0.87);
     width: 100vw;
     overflow-x: hidden;
     margin: 0;
     padding: 0;
     line-height: 1.5em;
+    will-change: opacity; /* Fix mix-blend-mode in Chrome. */
 }
 tt, code, kbd, samp, *[data-tip]::after, #version, #main .meta {
     font-family: 'Inconsolata', monospace;
@@ -22,6 +23,10 @@ tt, code, kbd, samp, *[data-tip]::after, #version, #main .meta {
     left: 0;
     width: 100vw;
     height: 100vh;
+}
+
+#landing {
+    mix-blend-mode: difference;
 }
 
 #header,
@@ -118,14 +123,6 @@ tt, code, kbd, samp, *[data-tip]::after, #version, #main .meta {
 }
 
 
-body:not([data-bgm]) #audio-toggle {
-    display: none;
-}
-body[data-bgm="off"] #audio-toggle-waves {
-    opacity: 0;
-    transform: translateX(4px);
-}
-
 #main-wrapper {
     display: block;
     position: relative;
@@ -150,11 +147,10 @@ body[data-bgm="off"] #audio-toggle-waves {
     animation: main-out 0.1s forwards ease-in;
     pointer-events: none;
 }
-/*
-body:not([data-bg="on"]) #main {
-    background: rgba(223, 223, 223, 1);
+body #main {
+    background: rgb(245, 245, 245);
+    box-shadow: 0 0 128px rgba(0, 0, 0, 0.05);
 }
-*/
 
 @keyframes main-in {
     0% {
@@ -186,23 +182,21 @@ h1 {
     font-size: 32px;
     line-height: 1.5em;
 }
-h1 a {
-    text-decoration: none;
-}
 
 a, a:visited {
-    transition: color 0.2s, text-decoration-color 0.2s, text-shadow 0.2s;
+    transition: color 0.2s, text-decoration-color 0.2s, text-shadow 0.2s, border-bottom 0.2s;
     color: rgba(0, 0, 0, 0.87);
-    text-decoration-color: rgba(0, 0, 0, 0.87);
+    text-decoration-color: rgba(0, 0, 0, 0.435);
     text-shadow: 0 0 0 rgba(0, 0, 0, 0);
 }
 a:hover, a:focus, a:active {
     color: rgba(0, 0, 0, 0.94);
     text-decoration-color: rgba(0, 0, 0, 0.94);
-    text-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
+    text-shadow: 0 0 16px rgba(0, 0, 0, 0.2);
 }
-a:after {
-    text-shadow: none;
+h1 a {
+    text-decoration: none;
+    border-bottom: solid 2px rgba(0, 0, 0, 0.435);
 }
 
 #main article.post-preview {
@@ -272,37 +266,11 @@ a:after {
 #main blockquote,
 #main .meta,
 tt,
-code:not(.highlighter-rouge),
+code:not(.highlighter-rouge):not(.unimportant),
 kbd,
-samp,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-    position: relative;
-    /*margin: 1em 0 1em 32px;*/
-}
-#main blockquote:not(.unimportant)::before,
-#main .meta:not(.unimportant)::before,
-tt::before,
-code:not(.unimportant):not(.highlighter-rouge)::before,
-kbd::before,
-samp::before,
-h1::before,
-h2::before,
-h3::before,
-h4::before,
-h5::before,
-h6::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: calc(-16px - 2px);
-    width: 2px;
-    background: rgba(0, 0, 0, 0.87);
+samp {
+    margin: 1em 0 1em 32px;
+    display: block;
 }
 
 /* Webkit seems to hate us. */
