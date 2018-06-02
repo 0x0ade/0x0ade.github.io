@@ -1,5 +1,5 @@
 body #main.home {
-    background: rgb(239, 239, 239);
+    background: rgba(239, 239, 239, 0.97);
 }
 
 #main.home > article {
@@ -12,11 +12,11 @@ body #main.home {
 #main.home > article.centered .bio {
     position: sticky;
     top: 0;
-    height: 100vh;
-    width: calc(512px);
+    max-width: calc(512px);
+    max-height: 100vh;
 }
 #main.home > article.centered .feed {
-    width: calc(100% - 512px);
+    max-width: calc(100% - 512px);
 }
 
 #main.home .feed > article {
@@ -28,4 +28,33 @@ body #main.home {
 }
 #main.home .feed > article:hover {
     box-shadow: 0 0 64px rgba(0, 0, 0, 0.1);
+}
+
+@media only screen and (min-width: 0px) and (max-width: 1300px) {
+    body #main.home {
+        background: rgba(245, 245, 245, 0.97);
+    }
+
+    #main.home > article {
+        flex-direction: column;
+    }
+
+    #main.home > article.centered .bio {
+        position: static;
+        max-width: none;
+        max-height: none;
+    }
+    #main.home > article.centered .feed {
+        max-width: none;
+    }
+    #main.home .feed > article {
+        transition: none;
+        background: transparent;
+        box-shadow: none;
+        padding: 0;
+        margin: 8px;
+    }
+    #main.home .feed > article:hover {
+        box-shadow: none;
+    }
 }
