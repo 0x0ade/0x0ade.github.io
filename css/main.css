@@ -135,6 +135,7 @@ tt, code, kbd, samp, *[data-tip]::after, #version, #main .meta {
     min-height: calc(100vh - 256px + 64px);
     padding: 32px;
     word-wrap: break-word;
+    transform-origin: 50% 0;
 }
 #main article.centered {
     max-width: calc(768px + 64px);
@@ -149,28 +150,28 @@ tt, code, kbd, samp, *[data-tip]::after, #version, #main .meta {
 }
 body #main {
     background: rgba(245, 245, 245, 0.97);
-    box-shadow: 0 0 128px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 0 128px rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
 }
 
 @keyframes main-in {
     0% {
         opacity: 0;
-        transform: translateX(-32px);
+        transform: translateY(-8px) scale(0.99);
     }
     100% {
         opacity: 1;
-        transform: translateX(0);
+        transform: translateY(0) scale(1);
     }
 }
-
 @keyframes main-out {
     0% {
         opacity: 1;
-        transform: translateX(0);
+        transform: translateY(0) scale(1);
     }
     100% {
         opacity: 0;
-        transform: translateX(32px);
+        transform: translateY(16px) scale(0.99);
     }
 }
 

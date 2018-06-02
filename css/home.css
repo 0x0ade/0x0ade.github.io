@@ -25,6 +25,7 @@ body #main.home {
     box-shadow: 0 0 48px rgba(0, 0, 0, 0.05);
     padding: 32px;
     margin: 16px;
+    border-radius: 8px;
 }
 #main.home .feed > article:hover {
     box-shadow: 0 0 64px rgba(0, 0, 0, 0.1);
