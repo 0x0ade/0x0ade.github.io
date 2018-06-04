@@ -2,7 +2,7 @@ html {
     min-height: 100vh;
 }
 body {
-    font-family: 'OverpassRegular', sans-serif;
+    font-family: 'overpass', sans-serif;
     background: rgb(225, 225, 225);
     color: rgba(0, 0, 0, 0.87);
     width: 100vw;
@@ -13,7 +13,7 @@ body {
     will-change: opacity; /* Fix mix-blend-mode in Chrome. */
 }
 tt, code, kbd, samp, *[data-tip]::after, #version, #main .meta {
-    font-family: 'OverpassMonoRegular', monospace;
+    font-family: 'overpass-mono', monospace;
 }
 
 #bg {
@@ -90,8 +90,7 @@ tt, code, kbd, samp, *[data-tip]::after, #version, #main .meta {
 }
 
 #version {
-    background: black;
-    color: rgba(255, 255, 255, 0.94);
+    color: rgba(0, 0, 0, 0.94);
     padding: 8px;
     height: 32px;
     box-sizing: border-box;
@@ -136,6 +135,9 @@ tt, code, kbd, samp, *[data-tip]::after, #version, #main .meta {
     padding: 32px;
     word-wrap: break-word;
     transform-origin: 50% 0;
+    background: rgba(245, 245, 245, 0.97);
+    box-shadow: 0 0 128px rgba(0, 0, 0, 0.2);
+    border-radius: 3px;
 }
 #main article.centered {
     max-width: calc(768px + 64px);
@@ -147,11 +149,6 @@ tt, code, kbd, samp, *[data-tip]::after, #version, #main .meta {
 #main[data-fade="out"] {
     animation: main-out 0.1s forwards ease-in;
     pointer-events: none;
-}
-body #main {
-    background: rgba(245, 245, 245, 0.97);
-    box-shadow: 0 0 128px rgba(0, 0, 0, 0.15);
-    border-radius: 8px;
 }
 
 @keyframes main-in {
