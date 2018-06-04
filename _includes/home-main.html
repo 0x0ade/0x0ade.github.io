@@ -36,36 +36,38 @@
         <header>
             <h1>&gt; feed</h1>
         </header>
-        {% for post in site.posts %}
-        <article class="post-preview">
-            <header>
-                <h2><a href="{{ post.url }}">{{ post.title | escape }}</a></h2>
-                {% assign date_format = site.date_format | default: "%b %-d, %Y" %}
-                <p class="meta unimportant">
-                    --excerpt --date
-                    <time class="dt-published" datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished">{{ post.date | date: date_format }}</time>
-                    {% if post.tags.size > 0 %}
-                    {% for tag in post.tags %}
-                    <span class="tag">{{ tag | escape }}</span>
-                    {% endfor %}
-                    <span itemprop="keywords" hidden>
+        <div class="post-previews">
+            {% for post in site.posts %}
+            <article class="post-preview">
+                <header>
+                    <h2><a href="{{ post.url }}">{{ post.title | escape }}</a></h2>
+                    {% assign date_format = site.date_format | default: "%b %-d, %Y" %}
+                    <p class="meta unimportant">
+                        --excerpt --date
+                        <time class="dt-published" datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished">{{ post.date | date: date_format }}</time>
+                        {% if post.tags.size > 0 %}
                         {% for tag in post.tags %}
-                        {{ tag | escape }}, 
-                        {% endfor %}                
-                    </span>
-                    {% endif %}
-                </p>
-            </header>
+                        <span class="tag">{{ tag | escape }}</span>
+                        {% endfor %}
+                        <span itemprop="keywords" hidden>
+                            {% for tag in post.tags %}
+                            {{ tag | escape }}, 
+                            {% endfor %}                
+                        </span>
+                        {% endif %}
+                    </p>
+                </header>
 
-            <div>
-                {{ post.excerpt }}
-            </div>
-            
-            <p class="meta unimportant">
-                <a href="{{ post.url }}">&gt; continue</a>
-            </p>
-        </article>
-        {% endfor %}
+                <div>
+                    {{ post.excerpt }}
+                </div>
+                
+                <p class="meta unimportant">
+                    <a href="{{ post.url }}">&gt; continue</a>
+                </p>
+            </article>
+            {% endfor %}
+        </div>
     </article>
     {% endif %}
 </article>
