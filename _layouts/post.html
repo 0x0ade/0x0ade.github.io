@@ -5,16 +5,16 @@ layout: default
     <header>
         <div id="nav">
             {% if page.previous %}
-            <a class="icon" id="prev" data-tip="prev" data-tip-dir="up" href="{{ page.previous.url }}"><img src="/icon/left.svg"/></a>
+            <a class="icon" href="{{ page.previous.url }}" data-tip-dir="up" data-tip="prev" id="prev"><img src="/icon/left.svg"/></a>
             {% else %}
             <span class="icon" style="pointer-events: none; cursor: unset;"></span>
             {% endif %}
             {% if page.next %}
-            <a class="icon" id="next" data-tip="next" data-tip-dir="up" href="{{ page.next.url }}"><img src="/icon/right.svg"/></a>
+            <a class="icon" href="{{ page.next.url }}" data-tip-dir="up" data-tip="next" id="next"><img src="/icon/right.svg"/></a>
             {% else %}
             <span class="icon" style="pointer-events: none; cursor: unset;"></span>
             {% endif %}
-            <a class="icon" id="close" data-tip="close" data-tip-dir="up" href="/"><img src="/icon/close.svg"/></a>
+            <a class="icon" href="/" data-tip-dir="up" data-tip="close" id="close"><img src="/icon/close.svg"/></a>
         </div>
         <h1 id="title">
             <a href="{{ page.url }}" class="p-name" itemprop="name headline">{{ page.title | escape }}</a>

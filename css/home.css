@@ -19,6 +19,10 @@ body #main.home {
     margin: 0 auto;
 }
 
+#main.home .bio *[data-tip]::after {
+    width: 256px;
+}
+
 #main.home .feed > .post-previews {
     display: flex;
     flex-direction: row;
