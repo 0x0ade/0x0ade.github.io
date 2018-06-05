@@ -21,7 +21,7 @@ defaults:
   - scope:
       path: ""
     values:
-      image: /preview.png
+      thumbnail: /preview.png
 
 # Build settings
 markdown: kramdown
