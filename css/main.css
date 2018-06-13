@@ -82,6 +82,25 @@ tt, code, kbd, samp, *[data-tip]::after, #version, #main .meta {
     z-index: -1001;
 }
 
+#ade-text {
+    font-size: 64px;
+    height: 64px;
+    margin: 8px 0 32px 0;
+    opacity: 0.87;
+}
+#ade-text-bg {
+    position: sticky;
+    float: left;
+    z-index: -1;
+    top: 32px;
+    left: 16px;
+    width: 64px;
+    height: 64px;
+    background: url("/icon/ade-sans.svg");
+    background-size: 64px 64px;
+    opacity: 0.05;
+}
+
 .left {
     float: left;
 }
