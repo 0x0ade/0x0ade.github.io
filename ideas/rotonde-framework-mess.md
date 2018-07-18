@@ -1,9 +1,10 @@
 ---
 layout: post
 title: "Rotonde's \"framework\" mess"
+date: 2018-07-18 23:30 +0100
 ---
 
-> `In reply to `[`Jim Pick/0jjrhr3p3 on Fritter`](dat://fritter.hashbase.io/thread/dat://c6740b08b319265079ebb9da98ee11a01da5d5379ca5d0ef12fa539403532372/posts/0jjrhr3p3.json)`, posted 2018-07-18`
+> `In reply to `[`Jim Pick/0jjrhr3p3 on Fritter`](dat://fritter.hashbase.io/thread/dat://c6740b08b319265079ebb9da98ee11a01da5d5379ca5d0ef12fa539403532372/posts/0jjrhr3p3.json)
 
 Honestly, I really miss the framework-free days of Rotonde, but frameworks / helpers are needed for a few things:
 
@@ -45,7 +46,7 @@ Using framework-less vanilla JS to manipulate the DOM was an "interesting" exper
 
 Meanwhile, RDOM grew and grew without any stop in sight. I've recently cut away some slack from it, but at this point, I'd rather use something else than rdom.
 
-Unfortunately, I haven't heard of it until after I began working on rotonde-neu, but the Polymer team is working on something similar: A focused HTML template helper called [lit-html](https://github.com/Polymer/lit-html), focused on efficient re-renders. I'm thinking about switching to it in the next few days.
+Unfortunately, I haven't heard of it until after I began working on rotonde-neu, but the Polymer team is working on something similar: A focused HTML template helper called [lit-html](https://github.com/Polymer/lit-html), focused on efficient re-renders. ~~I'm thinking about switching to it in the next few days.~~ It's still in development, doesn't allow easy element access and its "template caches" cause issues with rendering multiple elements of the same type.
 
 
 ## DB
