@@ -31,7 +31,7 @@ I actually planned on replacing it with something similar to Rotonde's old "deps
 
 ### Past
 
-Rotonde has initially updated `innerHTML` every time, which ended up causing too many DOM-related issues. Loss of element states, unwanted layout recalculations and repaints, you name it.
+Rotonde has initially updated `innerHTML` every time _anything_ had to be rendered, which ended up causing too many DOM-related issues. Among many other things, loss of element states and unwanted layout recalculations / repaints.
 
 Back in the day, I hacked together a mini-framework called "rdom", which was responsible for maintaining ordered lists without updating unrelated elements. It was still a DOM-refreshing innerHTML-based mess, though.
 
