@@ -22,8 +22,6 @@ For the time being, I'm repurposing my "lazyman" dependency loader from another 
 
 ### Future
 
-It's relatively lightweight at 8283b, or 2509b uglified, but it's huge compared to what it replaces.
-
 I actually planned on replacing it with something similar to Rotonde's old "deps installer". Migrating to ES6 modules would be even better.
 
 
