@@ -3,8 +3,8 @@ html {
 }
 body {
     font-family: 'overpass', sans-serif;
-    background: rgb(225, 225, 225);
-    color: rgba(0, 0, 0, 0.87);
+    background: rgb(15, 15, 15);
+    color: rgba(255, 255, 255, 0.87);
     width: 100vw;
     overflow-x: hidden;
     margin: 0;
@@ -52,19 +52,19 @@ tt, code, kbd, samp, *[data-tip]::after, #version, #main .meta {
     position: fixed;
     opacity: 0.1;
     background: linear-gradient(180deg,
-        rgba(0, 0, 0, 1.000) 0%,
-        rgba(0, 0, 0, 0.738) 19%,
-        rgba(0, 0, 0, 0.541) 34%,
-        rgba(0, 0, 0, 0.382) 47%,
-        rgba(0, 0, 0, 0.278) 56.5%,
-        rgba(0, 0, 0, 0.194) 65%,
-        rgba(0, 0, 0, 0.126) 73%,
-        rgba(0, 0, 0, 0.075) 80.2%,
-        rgba(0, 0, 0, 0.042) 86.1%,
-        rgba(0, 0, 0, 0.021) 91%,
-        rgba(0, 0, 0, 0.008) 95.2%,
-        rgba(0, 0, 0, 0.002) 98.2%,
-        rgba(0, 0, 0, 0.000) 100%
+        rgba(255, 255, 255, 1.000) 0%,
+        rgba(255, 255, 255, 0.738) 19%,
+        rgba(255, 255, 255, 0.541) 34%,
+        rgba(255, 255, 255, 0.382) 47%,
+        rgba(255, 255, 255, 0.278) 56.5%,
+        rgba(255, 255, 255, 0.194) 65%,
+        rgba(255, 255, 255, 0.126) 73%,
+        rgba(255, 255, 255, 0.075) 80.2%,
+        rgba(255, 255, 255, 0.042) 86.1%,
+        rgba(255, 255, 255, 0.021) 91%,
+        rgba(255, 255, 255, 0.008) 95.2%,
+        rgba(255, 255, 255, 0.002) 98.2%,
+        rgba(255, 255, 255, 0.000) 100%
     );
 }
 #header .icon {
@@ -109,7 +109,7 @@ tt, code, kbd, samp, *[data-tip]::after, #version, #main .meta {
 }
 
 #version {
-    color: rgba(0, 0, 0, 0.94);
+    color: rgba(255, 255, 255, 0.94);
     padding: 8px;
     height: 32px;
     box-sizing: border-box;
@@ -154,8 +154,8 @@ tt, code, kbd, samp, *[data-tip]::after, #version, #main .meta {
     padding: 32px;
     word-wrap: break-word;
     transform-origin: 50% 0;
-    background: rgba(245, 245, 245, 0.97);
-    box-shadow: 0 0 128px rgba(0, 0, 0, 0.2);
+    background: rgba(31, 31, 31, 1);
+    box-shadow: 0 0 128px rgba(0, 0, 0, 0.1);
     border-radius: 3px;
 }
 #main article.centered {
@@ -202,18 +202,18 @@ h1 {
 
 a, a:visited {
     transition: color 0.2s, text-decoration-color 0.2s, text-shadow 0.2s, border-bottom 0.2s;
-    color: rgba(0, 0, 0, 0.87);
-    text-decoration-color: rgba(0, 0, 0, 0.435);
-    text-shadow: 0 0 0 rgba(0, 0, 0, 0);
+    color: rgba(255, 255, 255, 0.87);
+    text-decoration-color: rgba(255, 255, 255, 0.435);
+    text-shadow: 0 0 0 rgba(255, 255, 255, 0);
 }
 a:hover, a:focus, a:active {
-    color: rgba(0, 0, 0, 0.94);
-    text-decoration-color: rgba(0, 0, 0, 0.94);
-    text-shadow: 0 0 16px rgba(0, 0, 0, 0.2);
+    color: rgba(255, 255, 255, 0.94);
+    text-decoration-color: rgba(255, 255, 255, 0.94);
+    text-shadow: 0 0 16px rgba(255, 255, 255, 0.2);
 }
 h1 a {
     text-decoration: none;
-    border-bottom: solid 2px rgba(0, 0, 0, 0.435);
+    border-bottom: solid 2px rgba(255, 255, 255, 0.435);
 }
 
 #main article.post-preview {
@@ -239,7 +239,7 @@ h1 a {
     opacity: 1;
 }
 #main #nav .icon img {
-    filter: brightness(0);
+    /* filter: brightness(0); */
     /* Works in Edge, but it can't deal with 64 / 300. */
     transform: scale(0.1066666666666667);
 }

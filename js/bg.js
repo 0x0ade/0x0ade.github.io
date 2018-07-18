@@ -279,7 +279,8 @@ void main() {
 
     c += vFadeBG * vFadeBG * 0.01 * texture2D(uSamplerNoise, vUV).a;
 
-    c = 0.95 - c;
+    // c = 0.95 - c;
+    c = 0.05 + c;
 
     gl_FragColor = vec4(vec3(c), 1.0);
 }

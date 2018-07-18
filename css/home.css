@@ -1,5 +1,5 @@
 body #main.home {
-    background: rgba(239, 239, 239, 0.97);
+    background: rgba(23, 23, 23, 1);
 }
 
 #main.home > article {
@@ -14,10 +14,25 @@ body #main.home {
     top: 16px;
     max-height: 100vh;
     z-index: 10;
+    color: rgba(255, 255, 255, 0.87);
 }
 #main.home > article.centered .feed {
     max-width: calc(100% - 512px);
     margin: 0 auto;
+}
+
+#main.home > article.centered .bio a, #main.home > article.centered .bio a:visited {
+    color: rgba(255, 255, 255, 0.87);
+    text-decoration-color: rgba(255, 255, 255, 0.435);
+    text-shadow: 0 0 0 rgba(255, 255, 255, 0);
+}
+#main.home > article.centered .bio a:hover, #main.home > article.centered .bio a:focus, #main.home > article.centered .bio a:active {
+    color: rgba(255, 255, 255, 0.94);
+    text-decoration-color: rgba(255, 255, 255, 0.94);
+    text-shadow: 0 0 16px rgba(255, 255, 255, 0.2);
+}
+#main.home > article.centered .bio h1 a {
+    border-bottom-color: rgba(255, 255, 255, 0.435);
 }
 
 #main.home .bio *[data-tip]::after {
@@ -28,11 +43,11 @@ body #main.home {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    filter: drop-shadow(0 0 32px rgba(0, 0, 0, 0.1));
+    filter: drop-shadow(0 0 32px rgba(0, 0, 0, 0.05, 1));
 }
 
 #main.home .feed > .post-previews > article {
-    background: rgba(245, 245, 245);
+    background: rgba(31, 31, 31, 1);
     padding: 16px;
     margin: 8px;
     border-radius: 3px;
@@ -58,10 +73,6 @@ body #main.home {
 }
 
 @media only screen and (min-width: 0px) and (max-width: 1300px) {
-    body #main.home {
-        background: rgba(245, 245, 245, 0.97);
-    }
-
     #main.home > article {
         flex-direction: column;
     }
