@@ -19,12 +19,19 @@ Rotonde has shipped with its own lightweight dependency loader / bootstrapper.
 
 I haven't read much into ES6 modules.
 
-For the time being, I'm repurposing my "lazyman" dependency loader from another project, which in itself is heavily inspired by Rotonde's old "dependency loader".
+~~For the time being, I'm repurposing my "lazyman" dependency loader from another project, which in itself is heavily inspired by Rotonde's old "dependency loader".~~
+
+>`Update: 2018-07-19`
+
+Rotonde is shipping its own miniature dependency loader again.
 
 ### Future
 
-I actually planned on replacing it with something similar to Rotonde's old "deps installer". Migrating to ES6 modules would be even better.
+~~I actually planned on replacing it with something similar to Rotonde's old "deps installer". Migrating to ES6 modules would be even better.~~
 
+>`Update: 2018-07-19`
+
+Migrating to ES6 modules would be great.
 
 ## DOM
 
@@ -46,7 +53,7 @@ Using framework-less vanilla JS to manipulate the DOM was an "interesting" exper
 
 Meanwhile, RDOM grew and grew without any stop in sight. I've recently cut away some slack from it, but at this point, I'd rather use something else than rdom.
 
-Unfortunately, I haven't heard of it until after I began working on rotonde-neu, but the Polymer team is working on something similar: A focused HTML template helper called [lit-html](https://github.com/Polymer/lit-html), focused on efficient re-renders. ~~I'm thinking about switching to it in the next few days.~~ It's still in development, doesn't allow easy element access and its "template caches" cause issues with rendering multiple elements of the same type.
+Unfortunately, I haven't heard of it until after I began working on rotonde-neu, but the Polymer team is working on something similar: A focused HTML template helper called [lit-html](https://github.com/Polymer/lit-html), focused on efficient re-renders. ~~I'm thinking about switching to it in the next few days.~~ It's still in development, and it's unclear to me whether rendering the same template twice updates the existing instance's holes, or if it creates an entirely new instance - and how updating the holes would work in that case. The `render` function doesn't even return the resulting `HTMLElement`.
 
 
 ## DB
