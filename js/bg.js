@@ -211,13 +211,22 @@ varying vec2 vTimeFade;
 varying vec2 vUV;
 varying vec2 vMouse;
 
-float get(vec3 v) {
+vec4 get(vec3 v) {
+    /*
     float a = cos(sin(v.x * 3.8) + sin(v.y * 3.8));
     float b = sin(v.x * 0.47 + v.z * 4.0) * sin(v.y * 0.47);
     float c = sin(v.x - sin(v.y) + v.z);
     float d = sin(2.0 * v.x + a) * sin(2.0 * v.y + b) * cos(b + c + 0.1 * v.z);
-    
+
     return 1.0 + 0.2 * a + 0.5 * a * c + 0.4 * c + 0.5 * b * d;
+    */
+
+    float a = cos(sin(v.x * 3.8) + sin(v.y * 3.8 + v.z * 3.24));
+    float b = sin(v.x * 2.47 + v.z * 4.0) + sin(v.y * 2.47);
+    float c = sin(v.x - sin(v.y) + v.z);
+    float d = sin(fract(2.0 * v.y + a + 4.324 * v.z) + fract(2.0 * v.x + c) + b);
+    
+    return vec4(a, b, c, d);
 }
 
 void main() {
@@ -232,41 +241,16 @@ void main() {
 
     uv += 0.05 * m;
 
-    uv.y += t;
+    uv *= vEdgeWidth * 8.0;
 
-    uv *= vEdgeWidth * 16.0;
-
-    t += 0.1 * m.x + 0.1 * m.y;
-
-    float cc = get(vec3(uv, t));
-    cc = 0.1 + min(0.8, cc * 0.5);
+    vec4 cv = get(vec3(uv, t));
+    float cc = cv.w;
+    cc = 0.8 + min(0.2, cc * 0.1);
 
     float growbf = 0.02 * grow;
     float edgec = vEdgeCount * 8.0;
 
-    /*
-    float edgef = vEdgeScale * vEdgeWidth * 0.01;
-    edgef *= 1.0 + 7.0 * grow;
-
-    // float cl = crush(edgec, get(vec3(uv.x - edgef, uv.y, t)));
-    // float cr = crush(edgec, get(vec3(uv.x + edgef, uv.y, t)));
-    // float cu = crush(edgec, get(vec3(uv.x, uv.y - edgef, t)));
-    // float cd = crush(edgec, get(vec3(uv.x, uv.y + edgef, t)));
-
-    float clu = crush(edgec, get(vec3(uv.x - edgef, uv.y - edgef, t)));
-    float cru = crush(edgec, get(vec3(uv.x + edgef, uv.y - edgef, t)));
-    float cld = crush(edgec, get(vec3(uv.x - edgef, uv.y + edgef, t)));
-    float crd = crush(edgec, get(vec3(uv.x + edgef, uv.y + edgef, t)));
-
-    float d = smoothstep(0.0, 1.0,
-        // abs(cl - cr) +
-        // abs(cu - cd) +
-        abs(clu - crd) +
-        abs(cld - cru)
-    );
-    */
-
-    float cf = get(vec3(0.1 * edgec * uv, t));
+    float cf = get(vec3(0.1 * edgec * uv, t)).w;
     float d = smoothstep(0.95, 1.0,
         0.5 * grow + abs(sin(PI * edgec * cf))
     );
@@ -282,6 +266,9 @@ void main() {
     // c = 0.95 - c;
     c = 0.05 + c;
 
+    // c = get(vec3(uv, t));
+
+    // gl_FragColor = vec4(vec3(c) + d * 0.5 - (d * 0.6 * cv.rgb), 1.0);
     gl_FragColor = vec4(vec3(c), 1.0);
 }
 `
