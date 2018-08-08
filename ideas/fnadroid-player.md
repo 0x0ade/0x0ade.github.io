@@ -8,7 +8,7 @@ date: 2018-08-08 00:45 +0100
 
 If you're a supporter on Patreon (or want to become one), you might want to check out [the post on Patreon.](https://www.patreon.com/posts/20619709)
 
-If you're a FNA developer, feel free to [ping me on Twitter](https://twitter.com/0x0ade) to gain access to the Discord server.
+If you're a FNA developer, please [contact me on Twitter](https://twitter.com/0x0ade) to gain access to the Discord server, which also contains a link to the newest .apk
 
 ----
 
@@ -21,7 +21,7 @@ At the moment, it also requires you to ship your own controller. I've only teste
 
 ### Download:
 - .apk: **`[REDACTED]`**
-- FDroid: Not yet.
+- F-Droid: Not yet.
 
 ### Source Code:
 - FNADroid Core + all relevant FNA patches: [https://github.com/0x0ade/FNADroid](https://github.com/0x0ade/FNADroid)
