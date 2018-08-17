@@ -7,12 +7,12 @@ Main = {
     domParser: new DOMParser(),
 
     hook(container) {
-        var anchors = Array.prototype.slice.call(container.getElementsByTagName('a'));
-        if (container.tagName.toLowerCase() == 'a')
+        var anchors = Array.prototype.slice.call(container.getElementsByTagName("a"));
+        if (container.tagName.toLowerCase() == "a")
             anchors.push(container);
         for (var i = 0; i < anchors.length; i++) {
             var elem = anchors[i];
-            elem.addEventListener('click', e => {
+            elem.addEventListener("click", e => {
                 e.preventDefault();
                 Main.goto(e.target.href, true);
             }, false);
@@ -31,17 +31,17 @@ Main = {
             return;
         }
 
-        console.log('goto: ', path);
+        console.log("goto: ", path);
 
         Main.path = path;
         
         var fade = true;
         var fadeInEnd = 0;
 
-        if (path.indexOf('://') !== -1) {
+        if (path.indexOf("://") !== -1) {
             // External path.
             window.location = path;
-            // TODO: Don't fade out when f.e. opening external app.
+            // TODO: Don"t fade out when f.e. opening external app.
             
         } else {
             // "Internal" path.
@@ -53,35 +53,35 @@ Main = {
                 fetch(path)
                 .then(response => response.text())
                 .then(body => {
-                    if (!body.startsWith('<!DOCTYPE html>') || body.indexOf('<moddoc>') === -1)
+                    if (!body.startsWith("<!DOCTYPE html>") || body.indexOf("<moddoc>") === -1)
                         throw null;
                     
                     // "Parsing" HTML in the worst way possible.
                     
-                    var titleIStart = body.indexOf('<title>');
-                    var titleIEnd = body.indexOf('</title>', titleIStart);
-                    var title = body.substring(titleIStart + '<title>'.length, titleIEnd);
-                    title = Main.domParser.parseFromString(title, 'text/html').documentElement.textContent;
+                    var titleIStart = body.indexOf("<title>");
+                    var titleIEnd = body.indexOf("</title>", titleIStart);
+                    var title = body.substring(titleIStart + "<title>".length, titleIEnd);
+                    title = Main.domParser.parseFromString(title, "text/html").documentElement.textContent;
                     
-                    var contentIStart = body.indexOf('<moddoc>');
-                    var contentIEnd = body.indexOf('</moddoc>', contentIStart);
-                    var content = body.substring(contentIStart + '<moddoc>'.length, contentIEnd);
+                    var contentIStart = body.indexOf("<moddoc>");
+                    var contentIEnd = body.indexOf("</moddoc>", contentIStart);
+                    var content = body.substring(contentIStart + "<moddoc>".length, contentIEnd);
 
                     if (manual)
                         history.pushState({
                             path: path
-                        }, '', path);
+                        }, "", path);
                     
                     setTimeout(() => {
                         Main.moddoc.innerHTML = content;
-                        Main.mainElem = document.getElementById('main');
+                        Main.mainElem = document.getElementById("main");
                         Main.hook(Main.mainElem);
                         document.title = title;
                         if (manual && (!window.location.hash || window.location.hash.length < 1))
                             window.scrollTo(0, 0);
                         if (Main.BG)
-                            Main.BG.dark = path !== '/';
-                        Main.mainElem.setAttribute('data-fade', 'in');
+                            Main.BG.dark = path !== "/";
+                        Main.mainElem.setAttribute("data-fade", "in");
                     }, Math.max(0, Math.ceil(fadeInEnd - window.performance.now())));
                 })
                 // .catch(() => window.location = path);
@@ -89,14 +89,14 @@ Main = {
         }
 
         if (fade) {
-            Main.mainElem.setAttribute('data-fade', 'out');
+            Main.mainElem.setAttribute("data-fade", "out");
             fadeInEnd = window.performance.now() + 100;
         }
 
     }
 };
 
-window.addEventListener('popstate', e => {
+window.addEventListener("popstate", e => {
     Main.goto(e.state.path, false);
 }, false);
 
@@ -105,13 +105,13 @@ window.addEventListener('popstate', e => {
     var fullscreenElement;
     var scrollX;
     var scrollY;
-    document.addEventListener('fullscreenchange', e => {
+    document.addEventListener("fullscreenchange", e => {
         if (fullscreenElement === document.fullscreenElement)
             return;
 
         if (fullscreenElement) {
-            document.body.classList.remove('fullscreen');
-            fullscreenElement.classList.remove('fullscreen');
+            document.body.classList.remove("fullscreen");
+            fullscreenElement.classList.remove("fullscreen");
         }
 
         if (document.fullscreenElement) {
@@ -120,8 +120,8 @@ window.addEventListener('popstate', e => {
                 scrollX = window.scrollX;
                 scrollY = window.scrollY;
             }
-            document.body.classList.add('fullscreen');
-            document.fullscreenElement.classList.add('fullscreen');
+            document.body.classList.add("fullscreen");
+            document.fullscreenElement.classList.add("fullscreen");
         } else {
             window.scrollTo(scrollX, scrollY);
         }
@@ -129,18 +129,22 @@ window.addEventListener('popstate', e => {
     }, false);
 })(document, window);
 
-document.addEventListener('DOMContentLoaded', e => {
+document.addEventListener("DOMContentLoaded", e => {
     history.replaceState({
         path: window.location.pathname
-    }, '', window.location.pathname);
+    }, "", window.location.pathname);
 
-    Main.moddoc = document.getElementsByTagName('moddoc')[0];
-    Main.mainElem = document.getElementById('main');
-    Main.hook(Main.mainElem);
+    Main.moddoc = document.getElementsByTagName("moddoc")[0];
+    Main.mainElem = document.getElementById("main");
+    if (Main.mainElem) {
+        Main.hook(Main.mainElem);
+    }
 
-    Main.logoElem = document.getElementById('logo');
-    Main.hook(Main.logoElem);
-    Main.logoElem.addEventListener('mousedown', e => e.preventDefault(), false);
+    Main.logoElem = document.getElementById("logo");
+    if (Main.logoElem) {
+        Main.hook(Main.logoElem);
+        Main.logoElem.addEventListener("mousedown", e => e.preventDefault(), false);
+    }
 
     Main.initialized = true;
 

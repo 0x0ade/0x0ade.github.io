@@ -1,14 +1,14 @@
 Main.BG = {
 
-    dark: Main.path !== '/',
+    dark: Main.path !== "/" && Main.path !== "/dashboard/",
 
     init() {
-        var canvas = Main.BG.canvas = document.getElementById('bg');
+        var canvas = Main.BG.canvas = document.getElementById("bg");
 
         var gl = null;
 
         try {
-            gl = Main.BG.gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+            gl = Main.BG.gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
         } catch(e) {
         }
 
@@ -16,29 +16,12 @@ Main.BG = {
             return;
 
         var mouse = [0.5, 0.5];
-        document.addEventListener('mousemove', e => {
+        document.addEventListener("mousemove", e => {
             mouse[0] = e.clientX / canvas.clientWidth - 0.5;
             mouse[1] = 1.0 - e.clientY / canvas.clientHeight - 0.5;
         }, false);
 
-        var motion = [0, 0];
-        /*
-        window.addEventListener('deviceorientation', e => {
-            var x = e.gamma;
-            var y = -e.beta;
-            var delta = [x - motion[0], y - motion[1]];
-            if (Math.abs(delta[0]) < 0.2 && Math.abs(delta[1]) < 0.2)
-                return;
-            delta[0] -= Math.sign(delta[0]) * 0.15;
-            delta[1] -= Math.sign(delta[1]) * 0.15;
-            motion[0] = x;
-            motion[1] = y;
-            mouse[0] += delta[0] * 0.05;
-            mouse[1] += delta[1] * 0.05;
-        }, false);
-        */
-
-        // Don't put the following util functions into Main.BG.
+        // Don"t put the following util functions into Main.BG.
 
         function loadShader(gl, type, src) {
             var shader = gl.createShader(type);
@@ -49,7 +32,7 @@ Main.BG = {
 `Failed compiling shader:
 
 --------
-${type == gl.VERTEX_SHADER ? 'VERTEX_SHADER' : type == gl.FRAGMENT_SHADER ? 'FRAGMENT_SHADER' : '??'}
+${type == gl.VERTEX_SHADER ? "VERTEX_SHADER" : type == gl.FRAGMENT_SHADER ? "FRAGMENT_SHADER" : "??"}
 --------
 ${src}
 
@@ -212,19 +195,10 @@ varying vec2 vUV;
 varying vec2 vMouse;
 
 vec4 get(vec3 v) {
-    /*
-    float a = cos(sin(v.x * 3.8) + sin(v.y * 3.8));
-    float b = sin(v.x * 0.47 + v.z * 4.0) * sin(v.y * 0.47);
-    float c = sin(v.x - sin(v.y) + v.z);
-    float d = sin(2.0 * v.x + a) * sin(2.0 * v.y + b) * cos(b + c + 0.1 * v.z);
-
-    return 1.0 + 0.2 * a + 0.5 * a * c + 0.4 * c + 0.5 * b * d;
-    */
-
     float a = cos(sin(v.x * 3.8) + sin(v.y * 3.8 + v.z * 3.24));
     float b = sin(v.x * 2.47 + v.z * 4.0) + sin(v.y * 2.47);
     float c = sin(v.x - sin(v.y) + v.z);
-    float d = sin(fract(2.0 * v.y + a + 4.324 * v.z) + fract(2.0 * v.x + c) + b);
+    float d = mod(a + b + c, mod(2.0 + 1.0 * fract(a + v.y + v.z), 4.0 * v.y + a + 4.324 * v.z) + mod(4.0 * v.x + c, 1.0 + 0.3 * a - 0.1 * b) + b);
     
     return vec4(a, b, c, d);
 }
@@ -264,30 +238,30 @@ void main() {
     c += vFadeBG * vFadeBG * 0.01 * texture2D(uSamplerNoise, vUV).a;
 
     // c = 0.95 - c;
-    c = 0.05 + c;
+    c = 0.1 + c;
 
-    // c = get(vec3(uv, t));
+    // c = get(vec3(uv, t)).rgb;
 
-    // gl_FragColor = vec4(vec3(c) + d * 0.5 - (d * 0.6 * cv.rgb), 1.0);
-    gl_FragColor = vec4(vec3(c), 1.0);
+    gl_FragColor = vec4(vec3(c) + d * 0.9 - (d * 1.1 * cv.rgb), 1.0);
+    // gl_FragColor = vec4(vec3(c), 1.0);
 }
 `
             ));
             gl.linkProgram(shaderBG);
             
             if (!gl.getProgramParameter(shaderBG, gl.LINK_STATUS))
-                throw new Error('Background shader program link failed.');
+                throw new Error("Background shader program link failed.");
             
             infoBG = {
                 attribLocations: {
-                    vertexPosition: gl.getAttribLocation(shaderBG, 'aVertexPosition'),
+                    vertexPosition: gl.getAttribLocation(shaderBG, "aVertexPosition"),
                 },
                 uniformLocations: {
-                    view: gl.getUniformLocation(shaderBG, 'uView'),
-                    samplerNoise: gl.getUniformLocation(shaderBG, 'uSamplerNoise'),
-                    edge: gl.getUniformLocation(shaderBG, 'uEdge'),
-                    timeFade: gl.getUniformLocation(shaderBG, 'uTimeFade'),
-                    mouse: gl.getUniformLocation(shaderBG, 'uMouse'),
+                    view: gl.getUniformLocation(shaderBG, "uView"),
+                    samplerNoise: gl.getUniformLocation(shaderBG, "uSamplerNoise"),
+                    edge: gl.getUniformLocation(shaderBG, "uEdge"),
+                    timeFade: gl.getUniformLocation(shaderBG, "uTimeFade"),
+                    mouse: gl.getUniformLocation(shaderBG, "uMouse"),
                 },
             };
 
@@ -324,15 +298,15 @@ void main() {
             gl.linkProgram(shaderBlit);
             
             if (!gl.getProgramParameter(shaderBlit, gl.LINK_STATUS))
-                throw new Error('Background blitting shader program link failed.');
+                throw new Error("Background blitting shader program link failed.");
             
             infoBlit = {
                 attribLocations: {
-                    vertexPosition: gl.getAttribLocation(shaderBlit, 'aVertexPosition'),
+                    vertexPosition: gl.getAttribLocation(shaderBlit, "aVertexPosition"),
                 },
                 uniformLocations: {
-                    sampler: gl.getUniformLocation(shaderBlit, 'uSampler'),
-                    view: gl.getUniformLocation(shaderBlit, 'uView'),
+                    sampler: gl.getUniformLocation(shaderBlit, "uSampler"),
+                    view: gl.getUniformLocation(shaderBlit, "uView"),
                 },
             };
 
@@ -353,15 +327,15 @@ void main() {
 
             renderId = requestAnimationFrame(render);    
         }
-        canvas.addEventListener('webglcontextlost', e => {
+        canvas.addEventListener("webglcontextlost", e => {
             console.log("die");
             cancelAnimationFrame(renderId);
             event.preventDefault();
         }, false);
-        canvas.addEventListener('webglcontextrestored', e => {
+        canvas.addEventListener("webglcontextrestored", e => {
             console.log("revive");
             noiseTexture = null;
-            gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+            gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
             buildContext();
         }, false);
         buildContext();
@@ -531,7 +505,7 @@ void main() {
             gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
             if (!_set_data_bg) {
-                document.body.setAttribute('data-bg', 'on');
+                document.body.setAttribute("data-bg", "on");
                 _set_data_bg = true;
             }
 
