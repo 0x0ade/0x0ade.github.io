@@ -1,5 +1,5 @@
 body #main.home {
-    background: rgba(23, 23, 23, 1);
+    background: rgba(23, 23, 23, 0.95);
 }
 
 #main.home > article {
@@ -36,7 +36,8 @@ body #main.home {
 }
 
 #main.home .bio *[data-tip]::after {
-    width: 256px;
+    width: calc(256px + 16px);
+    left: calc(128px + 8px);
 }
 
 #main.home .feed > .post-previews {
