@@ -1,0 +1,56 @@
+==================================================================
+https://keybase.io/0x0ade
+--------------------------------------------------------------------
+
+I hereby claim:
+
+  * I am an admin of https://0x0ade.github.io
+  * I am 0x0ade (https://keybase.io/0x0ade) on keybase.
+  * I have a public key ASA4Um_a3qXLTgxxLnb7RasnXoMY7KNKfhD7ka0nye-ZHAo
+
+To do so, I am signing this object:
+
+{
+  "body": {
+    "key": {
+      "eldest_kid": "012038526fdadea5cb4e0c712e76fb45ab275e8318eca34a7e10fb91ad27c9ef991c0a",
+      "host": "keybase.io",
+      "kid": "012038526fdadea5cb4e0c712e76fb45ab275e8318eca34a7e10fb91ad27c9ef991c0a",
+      "uid": "4a5cc14ecf7b8edbc73118c38f54cc19",
+      "username": "0x0ade"
+    },
+    "merkle_root": {
+      "ctime": 1535996706,
+      "hash": "af32d0cabf520d090d2372d1f10449bec3dfc55bfb3df084d25a65db3c47932085c61fbb98f632f717bc0993c31b2cc3a17873ac99c054bc7246831ddfb5dc9f",
+      "hash_meta": "8a7f7f5a411c483e4a381709c3808b3d91d558a82a2fa7dda2eac8fc14edc4d8",
+      "seqno": 3557265
+    },
+    "service": {
+      "entropy": "gE7RfIUzDVtn0kxR/D7byMLz",
+      "hostname": "0x0ade.github.io",
+      "protocol": "https:"
+    },
+    "type": "web_service_binding",
+    "version": 2
+  },
+  "client": {
+    "name": "keybase.io go client",
+    "version": "2.5.2"
+  },
+  "ctime": 1535996773,
+  "expire_in": 504576000,
+  "prev": "c919d93337a1d730645436dd06f6f986b97e293874fb8f27da32f816ba982a0d",
+  "seqno": 6,
+  "tag": "signature"
+}
+
+which yields the signature:
+
+hKRib2R5hqhkZXRhY2hlZMOpaGFzaF90eXBlCqNrZXnEIwEgOFJv2t6ly04McS52+0WrJ16DGOyjSn4Q+5GtJ8nvmRwKp3BheWxvYWTESpcCBsQgyRnZMzeh1zBkVDbdBvb5hrl+KTh0+48n2jL4FrqYKg3EIGcflArH9vuHNLqajDmPJnQab1lwLcdUQgq6f1H0IiysAgHCo3NpZ8RATdaY0jvqcvItDOE/yCYJPUprf6Lbf4fQiIrpUyMoPt4qM3tzx5c7Jna8rganloHdyoV6yfzSn0N1wK7XJ6FEC6hzaWdfdHlwZSCkaGFzaIKkdHlwZQildmFsdWXEINMXb1UuqxXrpBHUM7UH9ToPqXruPpZLvHBmXzIHcwyio3RhZ80CAqd2ZXJzaW9uAQ==
+
+And finally, I am proving ownership of this host by posting or
+appending to this document.
+
+View my publicly-auditable identity here: https://keybase.io/0x0ade
+
+==================================================================
