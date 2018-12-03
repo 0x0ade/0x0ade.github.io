@@ -15,16 +15,13 @@ social:
     - "dat://rotonde-0x0ade.hashbase.io"
 version: "18.12"
 
-logo: /favicon.png
-
-
 excerpt_separator: "<!-- MORE -->"
 
 defaults:
   - scope:
       path: ""
     values:
-      thumbnail: ""
+      image: "/favicon.png"
 
 # Build settings
 markdown: kramdown
