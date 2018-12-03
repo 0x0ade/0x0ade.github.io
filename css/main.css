@@ -126,7 +126,7 @@ tt, code, kbd, samp, /**[data-tip]::after, #version,*/ #main .meta {
 #main-wrapper {
     display: block;
     position: relative;
-    margin-bottom: 50vh;
+    margin-bottom: 10vh;
 }
 #main {
     display: block;
