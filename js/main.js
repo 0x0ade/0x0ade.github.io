@@ -35,7 +35,8 @@ Main = {
 
         Main.path = path;
         
-        var fade = true;
+        var fadeOut = true;
+        var fadeOutWait = true;
         var fadeInEnd = 0;
 
         if (path.indexOf("://") !== -1) {
@@ -45,52 +46,49 @@ Main = {
             
         } else {
             // "Internal" path.
+            fadeOutWait = false;
+            fetch(path)
+            .then(response => response.text())
+            .then(body => {
+                if (!body.startsWith("<!DOCTYPE html>") || body.indexOf("<moddoc>") === -1)
+                    throw null;
+                
+                // "Parsing" HTML in the worst way possible.
+                
+                var titleIStart = body.indexOf("<title>");
+                var titleIEnd = body.indexOf("</title>", titleIStart);
+                var title = body.substring(titleIStart + "<title>".length, titleIEnd);
+                title = Main.domParser.parseFromString(title, "text/html").documentElement.textContent;
+                
+                var contentIStart = body.indexOf("<moddoc>");
+                var contentIEnd = body.indexOf("</moddoc>", contentIStart);
+                var content = body.substring(contentIStart + "<moddoc>".length, contentIEnd);
 
-            if (window.DatArchive && window.location.protocol === "dat:") {
-                // TODO: Make use of DatArchive.
-
-            } else {
-                fetch(path)
-                .then(response => response.text())
-                .then(body => {
-                    if (!body.startsWith("<!DOCTYPE html>") || body.indexOf("<moddoc>") === -1)
-                        throw null;
-                    
-                    // "Parsing" HTML in the worst way possible.
-                    
-                    var titleIStart = body.indexOf("<title>");
-                    var titleIEnd = body.indexOf("</title>", titleIStart);
-                    var title = body.substring(titleIStart + "<title>".length, titleIEnd);
-                    title = Main.domParser.parseFromString(title, "text/html").documentElement.textContent;
-                    
-                    var contentIStart = body.indexOf("<moddoc>");
-                    var contentIEnd = body.indexOf("</moddoc>", contentIStart);
-                    var content = body.substring(contentIStart + "<moddoc>".length, contentIEnd);
-
-                    if (manual)
-                        history.pushState({
-                            path: path
-                        }, "", path);
-                    
-                    setTimeout(() => {
-                        Main.moddoc.innerHTML = content;
-                        Main.mainElem = document.getElementById("main");
-                        Main.hook(Main.mainElem);
-                        document.title = title;
-                        if (manual && (!window.location.hash || window.location.hash.length < 1))
-                            window.scrollTo(0, 0);
-                        if (Main.BG)
-                            Main.BG.dark = path !== "/";
-                        Main.mainElem.setAttribute("data-fade", "in");
-                    }, Math.max(0, Math.ceil(fadeInEnd - window.performance.now())));
-                })
-                // .catch(() => window.location = path);
-            }
+                if (manual)
+                    history.pushState({
+                        path: path
+                    }, "", path);
+                
+                setTimeout(() => {
+                    Main.moddoc.innerHTML = content;
+                    Main.mainElem = document.getElementById("main");
+                    Main.hook(Main.mainElem);
+                    document.title = title;
+                    if (manual && (!window.location.hash || window.location.hash.length < 1))
+                        window.scrollTo(0, 0);
+                    if (Main.BG)
+                        Main.BG.dark = path !== "/";
+                    Main.mainElem.setAttribute("data-fade", "in");
+                }, Math.max(0, Math.ceil(fadeInEnd - window.performance.now())));
+            })
+            // .catch(() => window.location = path)
         }
 
-        if (fade) {
+        if (fadeOut) {
             Main.mainElem.setAttribute("data-fade", "out");
-            fadeInEnd = window.performance.now() + 100;
+            if (fadeOutWait) {
+                fadeInEnd = window.performance.now() + 200;
+            }
         }
 
     }

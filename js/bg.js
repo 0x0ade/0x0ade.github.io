@@ -237,13 +237,15 @@ void main() {
 
     c += vFadeBG * vFadeBG * 0.01 * texture2D(uSamplerNoise, vUV).a;
 
-    // c = 0.95 - c;
-    c = 0.1 + c;
+    c = 0.065 + c;
 
     // c = get(vec3(uv, t)).rgb;
-
-    gl_FragColor = vec4(vec3(c) + d * 0.9 - (d * 1.1 * cv.rgb), 1.0);
+    
+    gl_FragColor = vec4(vec3(c) + d * 0.9 - (d * 0.2 * cv.rgb), 1.0);
     // gl_FragColor = vec4(vec3(c), 1.0);
+
+    // debug:
+    // gl_FragColor = vec4(vec3(0.5 + 0.5 * cv.a), 1.0);
 }
 `
             ));
