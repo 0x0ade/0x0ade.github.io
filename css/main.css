@@ -221,7 +221,7 @@ a:not(.no-invert)::after {
     transform-origin: 0% 100%;
     transform: scaleX(0);
     mix-blend-mode: difference;
-    /* pointer-events: none; */
+    pointer-events: none;
 }
 a:not(.no-invert):hover::after {
     transform: scaleX(1);
