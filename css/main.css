@@ -17,10 +17,6 @@ tt, code, kbd, samp, /**[data-tip]::after, #version,*/ #main .meta {
     font-family: 'overpass-mono', monospace;
 }
 
-.wideline {
-    line-height: 1.75em;
-}
-
 #bg {
     position: fixed;
     z-index: -1002;
@@ -146,32 +142,32 @@ tt, code, kbd, samp, /**[data-tip]::after, #version,*/ #main .meta {
     max-width: calc(768px + 64px);
     margin: 0 auto 0 auto;
 }
-#main:not([data-fade]), #main[data-fade="in"] {
-    animation: main-in 0.15s forwards ease-out;
+#main:not([data-fade]), #main[data-fade="in"], .fadein {
+    animation: main-in 0.15s both ease-out;
 }
-#main[data-fade="out"] {
-    animation: main-out 0.15s forwards ease-in;
+#main[data-fade="out"], .fadeout {
+    animation: main-out 0.15s both ease-in;
     pointer-events: none;
 }
 
 @keyframes main-in {
     0% {
         opacity: 0;
-        transform: translateX(-16px);
+        transform: translateY(-16px) scale(0.99);
     }
     100% {
         opacity: 1;
-        transform: translateX(0);
+        transform: translateY(0) scale(1);
     }
 }
 @keyframes main-out {
     0% {
         opacity: 1;
-        transform: translateX(0);
+        transform: translateY(0) scale(1);
     }
     100% {
         opacity: 0;
-        transform: translateX(16px);
+        transform: translateY(16px) scale(0.99);
     }
 }
 
@@ -179,21 +175,35 @@ h1, h2, h3, h4, h5, h6 {
     font-weight: 300;
     z-index: 0;
 }
-h1 {
+h1, h2, h3 {
     font-weight: 200;
+}
+h2 {
+    margin-bottom: calc(1em + 16px);
+}
+h1 {
     font-size: 32px;
     line-height: 1.5em;
 }
-header.sticky {
+.sticky, .substicky {
     position: sticky;
-    top: 48px;
     background: #111111;
     box-shadow: 0 0 16px 16px #111111;
     border-radius: 3px;
-    padding-left: 16px;
-    margin-left: -16px;
-    padding-right: 32px;
-    z-index: 1000;
+    padding-left: 32px;
+    margin-left: -32px;
+    padding-right: 64px;
+}
+.sticky {
+    top: 48px;
+    z-index: 500;
+    width: 100%;
+}
+.substicky {
+    top: calc(48px + 48px + 16px);
+    padding-top: 16px;
+    margin-top: calc(0.83em - 16px);
+    z-index: 499;
 }
 .hinline {
     display: inline-block;
@@ -203,11 +213,12 @@ header.sticky {
 
 a, a:visited {
     transition: color 0.2s, text-decoration-color 0.2s, text-shadow 0.2s, border-bottom 0.2s;
-    color: rgba(255, 255, 255, 0.87);
-    text-decoration-color: rgba(255, 255, 255, 0.435);
-    text-shadow: 0 0 0 rgba(255, 255, 255, 0);
+    color: rgba(150, 230, 255, 0.87);
+    text-decoration-color: rgba(150, 230, 255, 0.435);
+    text-shadow: 0 0 0 rgba(150, 230, 255, 0);
     font-weight: 500;
     position: relative;
+    display: inline-block;
 }
 a:not(.no-invert)::after {
     content: "";
@@ -227,13 +238,9 @@ a:not(.no-invert):hover::after {
     transform: scaleX(1);
 }
 a:hover, a:focus, a:active {
-    color: rgba(255, 255, 255, 0.94);
-    text-decoration-color: rgba(255, 255, 255, 0.94);
-    text-shadow: 0 0 16px rgba(255, 255, 255, 0.2);
-}
-h1 a {
-    text-decoration: none;
-    border-bottom: solid 2px rgba(255, 255, 255, 0.435);
+    color: rgba(150, 230, 255, 0.94);
+    text-decoration-color: rgba(150, 230, 255, 0.94);
+    text-shadow: 0 0 16px rgba(150, 230, 255, 0.2);
 }
 
 #main article.post-preview {
@@ -290,4 +297,57 @@ kbd,
 samp {
     margin: 1em 0 1em 32px;
     display: block;
+}
+
+.portrait-box {
+    position: relative;
+    width: 50%;
+}
+.portrait-box::before {
+    content: "";
+    display: block;
+    padding-top: 100%;
+}
+.portrait-box > .portrait {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    bottom: 8px;
+    right: 8px;
+    border-radius: 100%;
+    background: url("/media/me.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+.portrait-icon {
+    width: 25%;
+    height: 25%;
+    background: url("/icon/logo.svg");
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    transform: translate(-25%, -25%);
+}
+
+.bio, .biogrid {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    grid-auto-rows: auto;
+    grid-column-gap: 16px;
+}
+.bio > div {
+    margin-bottom: 64px;
+}
+
+@media only screen and (max-width: 950px) {
+    .bio {
+        display: block;
+    }
+}
+@media only screen and (max-width: 700px) {
+    .biogrid {
+        display: block;
+    }
 }

@@ -1,96 +1,171 @@
 <article class="centered">
-    <article class="bio" id="about">
-        <header class="sticky">
-            <h1>about</h1>
-        </header>
-        <h2 class="hinline">Maik Macho aka 0x0ade</h2>
-        <h3 class="hinline">is shouting into the void</h3><br>
-        <h4 class="hinline">in German, English, C#, C and JavaScript</h4>
-        <h5 class="hinline">while taking part in Merveilles.</h5>
-            
-        <h2>code</h2>
-        <p class="wideline">
-            <a href="https://github.com/0x0ade">GitHub</a>: All public projects since 2012.<br>
-            <a href="https://gitlab.com/0x0ade">GitLab</a>: Used for private collaborations.
-        </p>
-
-        <h2>social</h2>
-        <p class="wideline">
-            <a href="https://twitter.com/0x0ade">@0x0ade</a>: Main account, focused on tech, modding, P2P.<br>
-            <a href="https://twitter.com/profving">@profving</a>: Sporadic creative experiments.<br>
-            <a href="https://twitter.com/eda0x0">@eda0x0</a>: The person behind the screen.<br>
-            <a style="text-decoration: underline;">{lastname}.{name}@{google mail}.com</a>: Formal stuff.<br>
-        </p>
-        
-        <h2>support</h2>
-        <p class="wideline">
-            Thank you!<br>
-            <a href="https://paypal.me/dumpsterfire">PayPal</a>: One-time.<br>
-            <a href="https://www.patreon.com/0x0ade">Patreon</a>: Monthly + rewards.<br>
-        </p>
-    </article>
-
-    <article class="feed" id="projects">
-        <header class="sticky">
-            <h1>projects</h1>
-        </header>
-        <p class="wideline">
-            <a href="https://github.com/0x0ade/MonoMod">MonoMod</a>: Cross-platform C# modding basework, IL patcher and runtime detourer.<br>
-            <a href="https://github.com/0x0ade/FNADroid">FNADroid</a>: Wrapper to run games using the <a href="https://fna-xna.github.io/">FNA framework</a> on Android.<br>
-            <a href="https://github.com/Rotonde/rotonde-client/tree/rewrite">Rotonde</a>: P2P microblogging network &quot;<a href="https://wiki.xxiivv.com/#rotonde">Rotonde</a>&quot;, initiated by <a href="https://twitter.com/neauoire">Devine Lu Linvega</a>.<br>
-        </p>
-            
-        <h2>side</h2>
-        <p class="wideline">
-            <a href="https://twitter.com/everestapi">Everest</a>: Community-maintained modding API for &quot;<a href="http://www.celestegame.com/">Celeste</a>&quot;.<br>
-            <a href="https://github.com/0x0ade/XnaToFna">XnaToFna</a>: Post-compilation assembly relinker, forcing XNA games to use <a href="https://fna-xna.github.io/">FNA</a> instead.<br>
-        </p>
-            
-        <h2>past</h2>
-        <p class="wideline">
-            <a href="https://www.youtube.com/watch?v=D5h-2oU-ojo">Boundary Break: Yooka Laylee</a>: Unbound camera mod for an episode in the YouTube series &quot;<a href="https://www.youtube.com/channel/UCHTnEwQKNwm49CQeCVZogMw">Boundary Break</a>&quot;.<br>
-            <a href="https://modthegungeon.github.io/">Mod the Gungeon</a>: Community-maintained modding API for &quot;<a href="http://dodgeroll.com/gungeon/">Enter the Gungeon</a>&quot;.<br>
-            <a href="https://github.com/0x0ade/FEZMod-Legacy">FEZMod</a>: Second C# project (after MonoMod), smaller mods for &quot;<a href="http://fezgame.com/">FEZ</a>&quot;. Some fixes made it into in FEZ 1.12.<br>
-        </p>
-    </article>
-
-    {% if site.posts.size > 0 %}
-    <article class="feed" id="posts">
-        <header class="sticky">
-            <h1>posts</h1>
-        </header>
-        <div class="previews post-previews">
-            {% for post in site.posts %}
-            <article class="preview post-preview">
-                <header>
-                    <h2><a href="{{ post.ref }}">{{ post.title | escape }}</a></h2>
-                    {% assign date_format = site.date_format | default: "%b %-d, %Y" %}
-                    <p class="meta unimportant">
-                        --excerpt --date
-                        <time class="dt-published" datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished">{{ post.date | date: date_format }}</time>
-                        {% if post.tags.size > 0 %}
-                        {% for tag in post.tags %}
-                        <span class="tag">{{ tag | escape }}</span>
-                        {% endfor %}
-                        <span itemprop="keywords" hidden>
-                            {% for tag in post.tags %}
-                            {{ tag | escape }}, 
-                            {% endfor %}
-                        </span>
-                        {% endif %}
-                    </p>
+        <article class="bio">
+            <div id="about" style="grid-column-end: span 2;">
+                <header class="sticky">
+                    <h1>about</h1>
                 </header>
-
-                <div>
-                    {{ post.excerpt }}
+                <div class="biogrid">
+                    <div>
+                        <h2>
+                            <h2 class="hinline">Maik Macho aka 0x0ade</h2>
+                            <h3 class="hinline">is shouting into the void</h3><br>
+                            <h4 class="hinline">in German, English, C#, C and JavaScript</h4>
+                            <h5 class="hinline">while taking part in Merveilles.</h5>
+                        </h2>
+                    </div>
+        
+                    <div>
+                        <div class="portrait-box">
+                            <div class="portrait"></div>
+                            <div class="portrait-icon"></div>
+                        </div>
+                    </div>
                 </div>
-                
-                <p class="meta unimportant">
-                    <a href="{{ post.url }}">&gt; continue</a>
-                </p>
-            </article>
-            {% endfor %}
-        </div>
+            </div>
+    
+            <div id="links" class="fadein" style="animation-delay: 0.3s;">
+                <header class="sticky">
+                    <h1>links</h1>
+                </header>
+                <div class="biolist">
+                    <div>
+                        <h2 class="substicky">code</h2>
+                        <p>
+                            <h3 class="hinline"><a href="https://github.com/0x0ade">GitHub</a></h3><br>
+                            All public projects since 2012.
+                        </p>
+                        <p>
+                            <h3 class="hinline"><a href="https://gitlab.com/0x0ade">GitLab</a></h3><br>
+                            Used for private collaborations.
+                        </p>
+                    </div>
+            
+                    <div>
+                        <h2 class="substicky">social</h2>
+                        <p>
+                            <h3 class="hinline"><a href="https://twitter.com/0x0ade">@0x0ade</a></h3><br>
+                            Main account, focused on tech, modding, P2P.
+                        </p>
+                        <p>
+                            <h3 class="hinline"><a href="https://twitter.com/profving">@profving</a></h3><br>
+                            Sporadic creative experiments.
+                        </p>
+                        <p>
+                            <h3 class="hinline"><a href="https://twitter.com/eda0x0">@eda0x0</a></h3><br>
+                            The person behind the screen.
+                        </p>
+                        <p>
+                            <h3 class="hinline"><a style="text-decoration: underline;">{lastname}.{name}@{google mail}.com</a></h3><br>
+                            Formal stuff.
+                        </p>
+                    </div>
+                            
+                    <div>
+                        <h2 class="substicky">support</h2>
+                        <p>
+                            <h3 class="hinline"><a href="https://paypal.me/dumpsterfire">PayPal</a></h3><br>
+                            One-time.
+                        </p>
+                        <p>
+                            <h3 class="hinline"><a href="https://www.patreon.com/0x0ade">Patreon</a></h3><br>
+                            Monthly + rewards.
+                        </p>
+                        <p>
+                            Thank you!
+                        </p>
+                    </div>
+                </div>
+            </div>
+    
+            <div id="projects" class="fadein" style="animation-delay: 0.45s;">
+                <header class="sticky">
+                    <h1>projects</h1>
+                </header>
+                <div class="biogrid">
+                    <div style="grid-column-end: span 2;">
+                        <h2 class="substicky">main</h2>
+                        <p>
+                            <h3 class="hinline"><a href="https://github.com/0x0ade/MonoMod">MonoMod</a></h3><br>
+                            Cross-platform C# modding basework, IL patcher and runtime detourer.
+                        </p>
+                        <p>
+                            <h3 class="hinline"><a href="https://github.com/0x0ade/FNADroid">FNADroid</a></h3><br>
+                            Wrapper to run games using the <a href="https://fna-xna.github.io/">FNA framework</a> on Android.
+                        </p>
+                        <p>
+                            <h3 class="hinline"><a href="https://github.com/Rotonde/rotonde-client/tree/rewrite">Rotonde</a></h3><br>
+                            P2P microblogging network <a href="https://wiki.xxiivv.com/#rotonde">Rotonde</a>, initiated by <a href="https://twitter.com/neauoire">Devine Lu Linvega</a>.
+                        </p>
+                    </div>
+                        
+                    <div>
+                        <h2 class="substicky">side</h2>
+                        <p>
+                            <h3 class="hinline"><a href="https://twitter.com/everestapi">Everest</a></h3><br>
+                            Community-maintained modding API for <a href="http://www.celestegame.com/">Celeste</a>.
+                        </p>
+                        <p>
+                            <h3 class="hinline"><a href="https://github.com/0x0ade/XnaToFna">XnaToFna</a></h3><br>
+                            Post-compilation assembly relinker, forcing XNA games to use <a href="https://fna-xna.github.io/">FNA</a> instead.
+                        </p>
+                    </div>
+                        
+                    <div>
+                        <h2 class="substicky">past</h2>
+                        <p>
+                            <h3 class="hinline"><a href="https://www.youtube.com/watch?v=D5h-2oU-ojo">Boundary Break: Yooka Laylee</a></h3><br>
+                            Unbound camera mod for an episode in the YouTube series <a href="https://www.youtube.com/channel/UCHTnEwQKNwm49CQeCVZogMw">Boundary Break</a>.
+                        </p>
+                        <p>
+                            <h3 class="hinline"><a href="https://modthegungeon.github.io/">Mod the Gungeon</a></h3><br>
+                            Community-maintained modding API for <a href="http://dodgeroll.com/gungeon/">Enter the Gungeon</a>.
+                        </p>
+                        <p>
+                            <h3 class="hinline"><a href="https://github.com/0x0ade/FEZMod-Legacy">FEZMod</a></h3><br>
+                            Second C# project (after MonoMod), smaller mods for <a href="http://fezgame.com/">FEZ</a>. Some fixes made it into in FEZ 1.12.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </article>
+
+        {% if site.posts.size > 0 %}
+        <article class="feed" id="posts">
+            <header class="sticky">
+                <h1>posts</h1>
+            </header>
+            <div class="previews post-previews">
+                {% for post in site.posts %}
+                <article class="preview post-preview">
+                    <header>
+                        <h2><a href="{{ post.ref }}">{{ post.title | escape }}</a></h2>
+                        {% assign date_format = site.date_format | default: "%b %-d, %Y" %}
+                        <p class="meta unimportant">
+                            --excerpt --date
+                            <time class="dt-published" datetime="{{ page.date | date_to_xmlschema }}" itemprop="datePublished">{{ post.date | date: date_format }}</time>
+                            {% if post.tags.size > 0 %}
+                            {% for tag in post.tags %}
+                            <span class="tag">{{ tag | escape }}</span>
+                            {% endfor %}
+                            <span itemprop="keywords" hidden>
+                                {% for tag in post.tags %}
+                                {{ tag | escape }}, 
+                                {% endfor %}
+                            </span>
+                            {% endif %}
+                        </p>
+                    </header>
+    
+                    <div>
+                        {{ post.excerpt }}
+                    </div>
+                    
+                    <p class="meta unimportant">
+                        <a href="{{ post.url }}">&gt; continue</a>
+                    </p>
+                </article>
+                {% endfor %}
+            </div>
+        </article>
+        {% endif %}
     </article>
-    {% endif %}
-</article>
