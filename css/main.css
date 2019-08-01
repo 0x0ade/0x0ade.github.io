@@ -203,6 +203,7 @@ a, a:visited {
     position: relative;
     display: inline-block;
 }
+/*
 a:not(.no-invert)::after {
     content: "";
     position: absolute;
@@ -220,6 +221,7 @@ a:not(.no-invert)::after {
 a:not(.no-invert):hover::after {
     transform: scaleX(1);
 }
+*/
 a:hover, a:focus, a:active {
     color: rgba(150, 230, 255, 0.94);
     text-decoration-color: rgba(150, 230, 255, 0.94);
