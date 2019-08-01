@@ -5,15 +5,24 @@
                     <h1>about</h1>
                 </header>
                 <div class="biogrid">
-                    <div>
-                        <h2>
-                            <h2 class="hinline">Maik Macho aka 0x0ade</h2>
-                            <h3 class="hinline">is shouting into the void</h3><br>
-                            <h4 class="hinline">in German, English, C#, C and JavaScript</h4>
-                            <h5 class="hinline">while taking part in Merveilles.</h5>
-                        </h2>
+                    <div id="biocanvas-wrap"></div>
+                    <script>
+                        (()=>{
+                            let canvas = document.createElement("canvas");
+                            canvas.id = "biocanvas";
+                            document.getElementById("biocanvas-wrap").appendChild(canvas);
+                        })();
+                    </script>
+                    <script src="/js/biocanvas.js" async defer></script>
+
+                    <div class="bio-shortinfo">
+                        <h2></h2>
+                        <h2 class="hinline">Maik Macho aka 0x0ade</h2>
+                        <h3 class="hinline">is shouting into the void</h3><br>
+                        <h4 class="hinline">in German, English, C#, C and JavaScript</h4>
+                        <h5 class="hinline">while taking part in Merveilles.</h5>
                     </div>
-        
+
                     <div>
                         <div class="portrait-box">
                             <div class="portrait"></div>
@@ -44,11 +53,11 @@
                         <h2 class="substicky">social</h2>
                         <p>
                             <h3 class="hinline"><a href="https://twitter.com/0x0ade">@0x0ade</a></h3><br>
-                            Main account, focused on tech, modding, P2P.
+                            Main account, usual Twitter ramblings and C# modding.
                         </p>
                         <p>
-                            <h3 class="hinline"><a href="https://twitter.com/profving">@profving</a></h3><br>
-                            Sporadic creative experiments.
+                            <h3 class="hinline"><a href="https://merveilles.town/@0x0ade">@0x0ade@merveilles.town</a></h3><br>
+                            Secondary account, creative things and progress posts.
                         </p>
                         <p>
                             <h3 class="hinline"><a href="https://twitter.com/eda0x0">@eda0x0</a></h3><br>
@@ -81,20 +90,12 @@
                 <header class="sticky">
                     <h1>projects</h1>
                 </header>
-                <div class="biogrid">
+                <div class="biolist">
                     <div style="grid-column-end: span 2;">
                         <h2 class="substicky">main</h2>
                         <p>
                             <h3 class="hinline"><a href="https://github.com/0x0ade/MonoMod">MonoMod</a></h3><br>
                             Cross-platform C# modding basework, IL patcher and runtime detourer.
-                        </p>
-                        <p>
-                            <h3 class="hinline"><a href="https://github.com/0x0ade/FNADroid">FNADroid</a></h3><br>
-                            Wrapper to run games using the <a href="https://fna-xna.github.io/">FNA framework</a> on Android.
-                        </p>
-                        <p>
-                            <h3 class="hinline"><a href="https://github.com/Rotonde/rotonde-client/tree/rewrite">Rotonde</a></h3><br>
-                            P2P microblogging network <a href="https://wiki.xxiivv.com/#rotonde">Rotonde</a>, initiated by <a href="https://twitter.com/neauoire">Devine Lu Linvega</a>.
                         </p>
                     </div>
                         
@@ -115,6 +116,14 @@
                         <p>
                             <h3 class="hinline"><a href="https://www.youtube.com/watch?v=D5h-2oU-ojo">Boundary Break: Yooka Laylee</a></h3><br>
                             Unbound camera mod for an episode in the YouTube series <a href="https://www.youtube.com/channel/UCHTnEwQKNwm49CQeCVZogMw">Boundary Break</a>.
+                        </p>
+                        <p>
+                            <h3 class="hinline"><a href="https://github.com/0x0ade/FNADroid">FNADroid</a></h3><br>
+                            Wrapper to run games using the <a href="https://fna-xna.github.io/">FNA framework</a> on Android.
+                        </p>
+                        <p>
+                            <h3 class="hinline"><a href="https://github.com/Rotonde/rotonde-client/tree/rewrite">Rotonde</a></h3><br>
+                            P2P microblogging network <a href="https://wiki.xxiivv.com/#rotonde">Rotonde</a>, initiated by <a href="https://twitter.com/neauoire">Devine Lu Linvega</a>.
                         </p>
                         <p>
                             <h3 class="hinline"><a href="https://modthegungeon.github.io/">Mod the Gungeon</a></h3><br>

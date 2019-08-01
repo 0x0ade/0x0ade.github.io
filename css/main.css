@@ -3,7 +3,7 @@ html {
 }
 body {
     font-family: 'overpass', sans-serif;
-    background: #111111;
+    background: #222222;
     color: rgba(255, 255, 255, 0.87);
     width: 100vw;
     overflow-x: hidden;
@@ -62,25 +62,6 @@ tt, code, kbd, samp, /**[data-tip]::after, #version,*/ #main .meta {
     height: 32px;
     padding: 32px;
     z-index: -1001;
-}
-
-#ade-text {
-    font-size: 64px;
-    height: 64px;
-    margin: 8px 0 32px 0;
-    opacity: 0.87;
-}
-#ade-text-bg {
-    position: sticky;
-    float: left;
-    z-index: -1;
-    top: 32px;
-    left: 16px;
-    width: 64px;
-    height: 64px;
-    background: url("/icon/ade-sans.svg");
-    background-size: 64px 64px;
-    opacity: 0.05;
 }
 
 .left {
@@ -143,10 +124,10 @@ tt, code, kbd, samp, /**[data-tip]::after, #version,*/ #main .meta {
     margin: 0 auto 0 auto;
 }
 #main:not([data-fade]), #main[data-fade="in"], .fadein {
-    animation: main-in 0.15s both ease-out;
+    animation: main-in 0.215s both ease-out;
 }
 #main[data-fade="out"], .fadeout {
-    animation: main-out 0.15s both ease-in;
+    animation: main-out 0.215s both ease-in;
     pointer-events: none;
 }
 
@@ -179,30 +160,32 @@ h1, h2, h3 {
     font-weight: 200;
 }
 h2 {
-    margin-bottom: calc(1em + 16px);
+    margin-bottom: calc(1em - 8px);
 }
 h1 {
     font-size: 32px;
     line-height: 1.5em;
+    margin-bottom: calc(1em - 8px);
 }
 .sticky, .substicky {
     position: sticky;
-    background: #111111;
-    box-shadow: 0 0 16px 16px #111111;
-    border-radius: 3px;
-    padding-left: 32px;
-    margin-left: -32px;
+    background: #222222;
+    padding-left: 64px;
+    margin-left: -64px;
     padding-right: 64px;
+    box-shadow: 0 0 4px 4px #222222;
 }
 .sticky {
-    top: 48px;
+    top: 0;
+    padding-top: 16px;
     z-index: 500;
     width: 100%;
 }
 .substicky {
-    top: calc(48px + 48px + 16px);
+    top: 96px;
     padding-top: 16px;
-    margin-top: calc(0.83em - 16px);
+    margin-top: 0;
+    padding-bottom: 4px;
     z-index: 499;
 }
 .hinline {
@@ -302,6 +285,9 @@ samp {
 .portrait-box {
     position: relative;
     width: 50%;
+    right: 0;
+    margin-right: 0;
+    margin-left: auto;
 }
 .portrait-box::before {
     content: "";
@@ -310,14 +296,28 @@ samp {
 }
 .portrait-box > .portrait {
     position: absolute;
-    top: 8px;
-    left: 8px;
-    bottom: 8px;
-    right: 8px;
-    border-radius: 100%;
-    background: url("/media/me.png");
+    top: -16px;
+    left: -16px;
+    bottom: -16px;
+    right: -16px;
+    background: url(/media/me.png);
     background-repeat: no-repeat;
     background-size: cover;
+    will-change: opacity;
+    mix-blend-mode: lighten;
+    -webkit-mask-image: radial-gradient(circle at 100% 100%, black 20%, rgba(0, 0, 0, 0.5) 40%, transparent 50%), radial-gradient(circle at 50% 50%, black 20%, rgba(0, 0, 0, 0.5) 40%, transparent 70%);
+    mask-image: radial-gradient(circle at 100% 100%, black 20%, rgba(0, 0, 0, 0.5) 40%, transparent 50%), radial-gradient(circle at 50% 50%, black 20%, rgba(0, 0, 0, 0.5) 40%, transparent 70%);
+}
+.portrait-box::after {
+    content: "";
+    position: absolute;
+    top: -16px;
+    left: -16px;
+    bottom: -16px;
+    right: -16px;
+    background: radial-gradient(circle at 100% 100%, black 20%, rgba(0, 0, 0, 0.5) 40%, transparent 50%), radial-gradient(circle at 50% 50%, black 10%, rgba(0, 0, 0, 0.5) 30%, transparent 60%);
+    z-index: -1;
+    opacity: 0.2;
 }
 .portrait-icon {
     width: 25%;
@@ -326,19 +326,63 @@ samp {
     background-repeat: no-repeat;
     background-size: 100% 100%;
     position: absolute;
-    bottom: 0;
-    right: 0;
+    bottom: -16px;
+    right: -16px;
     transform: translate(-25%, -25%);
 }
 
 .bio, .biogrid {
     display: grid;
+    position: relative;
     grid-template-columns: 50% 50%;
     grid-auto-rows: auto;
     grid-column-gap: 16px;
 }
 .bio > div {
     margin-bottom: 64px;
+}
+
+#about .biogrid {
+    grid-column-gap: 0;
+}
+#biocanvas-wrap, #about .biogrid::after {
+    position: absolute;
+    top: -16px;
+    left: -16px;
+    width: calc(100% + 32px);
+    height: calc(100% + 32px);
+    overflow: hidden;
+}
+#biocanvas-wrap {
+    background: #222222;
+    z-index: -1;
+}
+#about .biogrid::after {
+    content: "";
+    z-index: 2;
+    box-shadow: 0 6px 32px -4px rgba(0, 0, 0, 0.5);
+    pointer-events: none;
+}
+#biocanvas {
+    position: absolute;
+    top: -4px;
+    left: -4px;
+    width: calc(100% + 8px);
+    height: calc(100% + 8px);
+    z-index: -1;
+}
+.bio-shortinfo {
+    color: white;
+}
+.bio-shortinfo::before {
+    content: "";
+    position: absolute;
+    top: -16px;
+    left: -16px;
+    width: calc(100% + 16px);
+    height: calc(100% + 32px);
+    z-index: -1;
+    background: radial-gradient(circle at 0% 0%, rgba(255, 255, 255, 0.3), rgba(0, 0, 0, 0) 50%);
 }
 
 @media only screen and (max-width: 950px) {
