@@ -34,9 +34,10 @@ Main = {
         console.log("goto: ", path);
 
         Main.path = path;
-        
-        var fadeOut = true;
-        var fadeOutWait = true;
+
+        // Set to false as it causes issues on mobile.
+        var fadeOut = false;
+        var fadeOutWait = false;
         var fadeInEnd = 0;
 
         if (path.indexOf("://") !== -1) {
