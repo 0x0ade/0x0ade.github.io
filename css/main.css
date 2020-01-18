@@ -170,9 +170,9 @@ h1 {
 .sticky, .substicky {
     position: sticky;
     background: #222222;
-    padding-left: 64px;
-    margin-left: -64px;
-    padding-right: 64px;
+    padding-left: 32px;
+    margin-left: -32px;
+    padding-right: 32px;
     box-shadow: 0 0 4px 4px #222222;
 }
 .sticky {
@@ -296,6 +296,11 @@ samp {
     display: block;
     padding-top: 100%;
 }
+/* UNCOMMENT THIS, PORTRAIT IN home-main.html AND READD main/me.png
+ * ONCE I FIGURE MYSELF OUT.
+ * -ade
+ */
+/*
 .portrait-box > .portrait {
     position: absolute;
     top: -16px;
@@ -309,6 +314,7 @@ samp {
     mix-blend-mode: lighten;
     -webkit-mask-image: radial-gradient(circle at 100% 100%, black 20%, rgba(0, 0, 0, 0.5) 40%, transparent 50%), radial-gradient(circle at 50% 50%, black 20%, rgba(0, 0, 0, 0.5) 40%, transparent 70%);
     mask-image: radial-gradient(circle at 100% 100%, black 20%, rgba(0, 0, 0, 0.5) 40%, transparent 50%), radial-gradient(circle at 50% 50%, black 20%, rgba(0, 0, 0, 0.5) 40%, transparent 70%);
+    border-bottom-right-radius: 3px;
 }
 .portrait-box::after {
     content: "";
@@ -320,7 +326,9 @@ samp {
     background: radial-gradient(circle at 100% 100%, black 20%, rgba(0, 0, 0, 0.5) 40%, transparent 50%), radial-gradient(circle at 50% 50%, black 10%, rgba(0, 0, 0, 0.5) 30%, transparent 60%);
     z-index: -1;
     opacity: 0.2;
+    border-bottom-right-radius: 3px;
 }
+*/
 .portrait-icon {
     width: 25%;
     height: 25%;
@@ -354,6 +362,7 @@ samp {
     width: calc(100% + 32px);
     height: calc(100% + 32px);
     overflow: hidden;
+    border-radius: 3px;
 }
 #biocanvas-wrap {
     background: #222222;
@@ -362,7 +371,7 @@ samp {
 #about .biogrid::after {
     content: "";
     z-index: 2;
-    box-shadow: 0 6px 32px -4px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 6px 16px -4px rgba(0, 0, 0, 0.5);
     pointer-events: none;
 }
 #biocanvas {
@@ -385,6 +394,7 @@ samp {
     height: calc(100% + 32px);
     z-index: -1;
     background: radial-gradient(circle at 0% 0%, rgba(255, 255, 255, 0.3), rgba(0, 0, 0, 0) 50%);
+    border-radius: 3px;
 }
 
 @media only screen and (max-width: 950px) {
