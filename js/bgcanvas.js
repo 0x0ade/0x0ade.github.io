@@ -38,12 +38,25 @@ class BG {
     }, false);
 
     this.render = this.render.bind(this);
+
+    this.randomize = this.randomize.bind(this);
+    this.randomize();
+
+    document.addEventListener("click", this.randomize);
+  }
+
+  randomize() {
+    this.timeFast = Math.max(this.timeFast, 1 + Math.random());
+
+    if (this.randomizeTimeout)
+      clearTimeout(this.randomizeTimeout);
+    this.randomizeTimeout = setTimeout(this.randomize, 50 + Math.random() * Math.random() * 3000 + Math.random() * 6000);
   }
 
   init() {
     /** @type {HTMLCanvasElement} */
     // @ts-ignore
-    this.canvas = document.getElementById("biocanvas");
+    this.canvas = document.getElementById("bgcanvas");
 
     if (!this.canvas)
       return;
@@ -52,7 +65,7 @@ class BG {
     this.gl = null;
 
     try {
-      this.gl = this.canvas.getContext("webgl") || this.canvas.getContext("experimental-webgl");
+      this.gl = this.canvas.getContext("webgl");
     } catch(e) {
     }
 
@@ -67,7 +80,7 @@ class BG {
     this.canvas.addEventListener("webglcontextrestored", e => {
       console.log("revive");
       this.noiseTexture = null;
-      this.gl = this.canvas.getContext("webgl") || this.canvas.getContext("experimental-webgl");
+      this.gl = this.canvas.getContext("webgl");
       this.buildContext();
     }, false);
     this.buildContext();
@@ -165,10 +178,10 @@ void main() {
   uv += 0.01 * m;
 
   uv *= vEdgeWidth * 3.0;
-  uv *= 1.0 + 0.8 * smoothstep(-0.2, 0.4, uv.x);
+  uv *= 16.0 + 0.8 * smoothstep(-0.2, 0.4, uv.x);
 
-  vec4 cv = 0.5 + 0.5 * get(vec3(uv, t + m.x * 0.02));
-  vec4 ev = 0.5 + 0.5 * get2(vec3(uv - m * 0.01, t - m.y * 0.02));
+  vec4 cv = 0.5 + 0.5 * get(vec3(uv, t * 2.0 + m.x * 0.04));
+  vec4 ev = 0.5 + 0.5 * get2(vec3(uv * 2.0 - m * 0.02, t - m.y * 0.04));
 
   float d = cv.w * 0.9 + ev.w * 0.2;
 
@@ -183,19 +196,25 @@ void main() {
   c = c * 0.8 + 0.5 * c * ev.rgb;
   c = 0.3 * c + 0.3 * vec3(max(c.r, max(c.g, c.b)));
 
-  float cf = c.r * 0.3 + c.g * 0.4 + c.b * 0.3;
+  vec3 c2 = max(sin(2.0 + c * 2.0) * c, sin(sin(t * 8.0) + c * 3.0 + ev.bgr * 0.125) / (1.0 + c) - cv.rgb * 0.125);
 
-  vec3 c2 = vec3(cf) / (c + 1.0) - c;
+  c2 = max(sin(t * 20.0) * 0.5 * cv.bga + vec3(1.0 - c.r * 0.3 - c.g * 0.3 - c.b * 0.3) - c2, c2);
 
-  gl_FragColor = vec4(cf * 0.7 + c * 0.2 + c2 * 0.4, 1.0);
+  c2 += vec3(c.g, c.b, c.r) * ev.bgr;
+
+  float cf = c2.r * 0.3 + c2.g * 0.4 + c2.b * 0.3;
+
+  vec3 c3 = vec3(cf) / (c2 + 1.0) - c2;
+
+  gl_FragColor = vec4(cf * 0.7 + c2 * 0.5 + c3 * 0.7, 1.0);
 }
 `
     ));
     gl.linkProgram(shaderBG);
-    
+
     if (!gl.getProgramParameter(shaderBG, gl.LINK_STATUS))
       throw new Error("Background shader program link failed.");
-    
+
     this.infoBG = {
       attribLocations: {
         vertexPosition: gl.getAttribLocation(shaderBG, "aVertexPosition"),
@@ -240,10 +259,10 @@ gl_FragColor = texture2D(uSampler, vUV);
 `
     ));
     gl.linkProgram(this.shaderBlit);
-    
+
     if (!gl.getProgramParameter(this.shaderBlit, gl.LINK_STATUS))
       throw new Error("Background blitting shader program link failed.");
-    
+
     this.infoBlit = {
       attribLocations: {
         vertexPosition: gl.getAttribLocation(this.shaderBlit, "aVertexPosition"),
@@ -269,7 +288,7 @@ gl_FragColor = texture2D(uSampler, vUV);
     gl.vertexAttribPointer(this.infoBG.attribLocations.vertexPosition, 2, gl.FLOAT, false, 0, 0);
     gl.enableVertexAttribArray(this.infoBG.attribLocations.vertexPosition);
 
-    this.renderId = requestAnimationFrame(this.render);  
+    this.renderId = requestAnimationFrame(this.render);
   }
 
   loadShader(type, src) {
@@ -374,7 +393,7 @@ ${gl.getShaderInfoLog(shader)}
     if (!this.start)
       this.start = now;
     now -= this.start;
-    
+
     if (this.frameskipped < this.frameskip) {
       this.frameskipped++;
       this.renderId = requestAnimationFrame(this.render);
@@ -395,7 +414,7 @@ ${gl.getShaderInfoLog(shader)}
       this.dropped = 0;
       console.log("Low performance. Scale: ", this.dynscale);
     } else if (this.dropped < -5) {
-      this.dynscale = Math.max(3.0, this.dynscale * 0.9);
+      this.dynscale = Math.max(2.0, this.dynscale * 0.9);
       this.dropped = 0;
       if (this.dynscale != dynscaleOld)
         console.log("High performance. Scale: ", this.dynscale);
@@ -421,21 +440,15 @@ ${gl.getShaderInfoLog(shader)}
     this.timeFast = Math.max(0, this.timeFast - this.delta * 0.001);
     this.timeRaw += this.delta;
 
-    let density = 1; /*(
-      window.devicePixelRatio ||
-      window.webkitDevicePixelRatio ||
-      window.mozDevicePixelRatio ||
-      window.opDevicePixelRatio ||
-      1
-    );*/
+    let density = window.devicePixelRatio || 1;
     let dyndensity = density / this.dynscale;
 
     let width = this.canvas.clientWidth;
     let height = this.canvas.clientHeight;
     let aspect = width / height;
 
-    let outputWidth = width * density;  
-    let outputHeight = height * density;  
+    let outputWidth = width * density;
+    let outputHeight = height * density;
 
     let scaleWidth = width * dyndensity;
     let scaleHeight = height * dyndensity;
@@ -466,7 +479,7 @@ ${gl.getShaderInfoLog(shader)}
 
     }
 
-    this.generateScaleFBO(scaleWidth, scaleHeight);  
+    this.generateScaleFBO(scaleWidth, scaleHeight);
 
     if (resized || dynscaleOld != this.dynscale) {
       gl.useProgram(shaderBG);
@@ -492,7 +505,7 @@ ${gl.getShaderInfoLog(shader)}
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, this.scaleFBO);
     gl.viewport(0, 0, width * dyndensity, height * dyndensity);
-    
+
     gl.useProgram(shaderBG);
     gl.uniform3fv(
       this.infoBG.uniformLocations.timeFadeTimeRaw,
@@ -504,13 +517,13 @@ ${gl.getShaderInfoLog(shader)}
     );
     gl.uniform2fv(
       this.infoBG.uniformLocations.mouse,
-      [vwidth * this.mouse[0] + window.screenX * 0.05 - window.scrollX * 0.05, vheight * this.mouse[1] - window.screenY * 0.05 + window.scrollY * 0.05]
+      [vwidth * this.mouse[0] * 2.0 + window.screenX * 0.05 - window.scrollX * 0.05, vheight * this.mouse[1] * 2.0 - window.screenY * 0.05 - window.scrollY * 0.0125]
     );
 
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, this.noiseTexture);
     gl.uniform1i(this.infoBG.uniformLocations.samplerNoise, 0);
-    
+
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
     // Draw to screen.
@@ -523,7 +536,7 @@ ${gl.getShaderInfoLog(shader)}
     gl.activeTexture(gl.TEXTURE0);
     gl.bindTexture(gl.TEXTURE_2D, this.scaleFBOTexture);
     gl.uniform1i(this.infoBlit.uniformLocations.sampler, 0);
-    
+
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
     if (!this._set_data_bg) {
