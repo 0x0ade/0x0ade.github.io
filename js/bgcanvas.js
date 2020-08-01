@@ -196,11 +196,7 @@ void main() {
   c = c * 0.8 + 0.5 * c * ev.rgb;
   c = 0.3 * c + 0.3 * vec3(max(c.r, max(c.g, c.b)));
 
-  vec3 c2 = max(sin(2.0 + c * 2.0) * c, sin(sin(t * 8.0) + c * 3.0 + ev.bgr * 0.125) / (1.0 + c) - cv.rgb * 0.125);
-
-  c2 = max(sin(t * 20.0) * 0.5 * cv.bga + vec3(1.0 - c.r * 0.3 - c.g * 0.3 - c.b * 0.3) - c2, c2);
-
-  c2 += vec3(c.g, c.b, c.r) * ev.bgr;
+  vec3 c2 = max(1.0 - c, c.gbr / (c + 0.2));
 
   float cf = c2.r * 0.3 + c2.g * 0.4 + c2.b * 0.3;
 
