@@ -143,14 +143,14 @@ h1 {
     top: 16px;
     z-index: 500;
     border-radius: 3px;
-    background: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.8);
     padding: 16px 16px 8px 32px;
 }
 .substicky {
     top: calc(16px + 96px);
     z-index: 499;
     border-radius: 3px;
-    background: rgba(235, 235, 235, 0.7);
+    background: rgba(235, 235, 235, 0.8);
     padding: 16px 16px 8px 32px;
     margin-left: -32px;
     margin-top: -8px;
@@ -166,12 +166,11 @@ h1 {
 }
 
 .sticky, .substicky, .section {
-    backdrop-filter: blur(8px) saturate(2.5);
     margin-bottom: 16px;
 }
 
 .section {
-    background: rgba(255, 255, 255, 0.7);
+    background: rgba(255, 255, 255, 0.8);
     border-radius: 3px;
     padding: 8px 32px;
 }
